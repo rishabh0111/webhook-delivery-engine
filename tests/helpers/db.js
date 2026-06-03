@@ -10,12 +10,11 @@ async function setupDb() {
 }
 
 // Wipe all domain tables between tests so each test starts from a clean slate.
-// RESTART IDENTITY + CASCADE keeps it simple as more tables (event,
-// delivery_attempt, ...) arrive in later slices.
+// RESTART IDENTITY + CASCADE keeps it simple. Only lists tables that exist as
+// of THIS commit — TRUNCATE errors ("relation ... does not exist") if a listed
+// table hasn't been migrated yet.
 async function resetDb() {
-  await pool.query(
-    'TRUNCATE TABLE dead_letter, delivery_attempt, event, subscription RESTART IDENTITY CASCADE'
-  );
+  await pool.query('TRUNCATE TABLE subscription RESTART IDENTITY CASCADE');
 }
 
 // Release the shared pool so Jest can exit cleanly.
