@@ -6,6 +6,7 @@ const db = require('./db');
 const config = require('./config');
 const logger = require('./logger');
 const { QUEUE_NAME } = require('./queue');
+const { buildSignatureHeaders } = require('./signing');
 
 // Response bodies are recorded truncated (~2KB) for debugging.
 const RESPONSE_BODY_LIMIT = 2048;
@@ -44,13 +45,18 @@ async function processDelivery(job) {
   );
   const attemptNumber = numRows[0].n;
 
-  // Identity headers. webhook-id = event id so it is stable across retries,
-  // letting receivers dedup at-least-once deliveries. (Signature added later.)
+  // Identity + signing headers. webhook-id = event id so it is stable across
+  // retries and replays. The signature (when the subscription has a secret) is
+  // computed over the exact raw_body bytes plus the timestamp we send.
   const timestamp = Math.floor(Date.now() / 1000).toString();
   const headers = {
     'content-type': 'application/json',
-    'x-webhook-id': event.id,
-    'x-webhook-timestamp': timestamp,
+    ...buildSignatureHeaders({
+      webhookId: event.id,
+      timestamp,
+      secret: subscription.secret,
+      rawBody: event.raw_body,
+    }),
   };
 
   const timeoutMs = config.deliveryTimeoutMs;

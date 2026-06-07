@@ -83,3 +83,51 @@ describe('processDelivery (worker seam)', () => {
     expect(attempts.rows).toHaveLength(0);
   });
 });
+
+// Independent receiver-side verification (recomputed from scratch, not reusing
+// src/signing.js, so the test proves a third party can verify).
+function receiverVerify(secret, headers, rawBody) {
+  const timestamp = headers['x-webhook-timestamp'];
+  const received = headers['x-webhook-signature'];
+  if (!timestamp || !received) return false;
+  const expected =
+    'sha256=' +
+    crypto.createHmac('sha256', secret).update(`${timestamp}.`).update(rawBody).digest('hex');
+  return received === expected;
+}
+
+describe('HMAC signing', () => {
+  it('sends id/timestamp headers and a signature the receiver can independently verify', async () => {
+    const secret = 'a'.repeat(64);
+    const payload = Buffer.from(JSON.stringify({ amount: 100 }), 'utf8');
+    const eventId = await seedEvent(payload, 'pending', secret);
+
+    await processDelivery({ data: { eventId } });
+
+    expect(received.headers['x-webhook-id']).toBe(eventId);
+    expect(received.headers['x-webhook-timestamp']).toMatch(/^\d+$/);
+    expect(received.headers['x-webhook-signature']).toMatch(/^sha256=[0-9a-f]{64}$/);
+    expect(receiverVerify(secret, received.headers, received.body)).toBe(true);
+  });
+
+  it('signature is over the exact raw bytes — a tampered body fails verification', async () => {
+    const secret = 'b'.repeat(64);
+    const payload = Buffer.from(JSON.stringify({ amount: 100 }), 'utf8');
+    const eventId = await seedEvent(payload, 'pending', secret);
+
+    await processDelivery({ data: { eventId } });
+
+    const tampered = Buffer.concat([received.body, Buffer.from('!')]);
+    expect(receiverVerify(secret, received.headers, tampered)).toBe(false);
+    expect(receiverVerify(secret, received.headers, received.body)).toBe(true);
+  });
+
+  it('omits the signature header when the subscription has no secret', async () => {
+    const eventId = await seedEvent(Buffer.from('{}', 'utf8'), 'pending', null);
+
+    await processDelivery({ data: { eventId } });
+
+    expect(received.headers['x-webhook-id']).toBe(eventId);
+    expect(received.headers['x-webhook-signature']).toBeUndefined();
+  });
+});

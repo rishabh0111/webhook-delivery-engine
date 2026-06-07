@@ -6,6 +6,7 @@ const { z } = require('zod');
 const db = require('../db');
 const { ApiError } = require('../errors');
 const { enqueueDelivery } = require('../queue');
+const { signatureHeader, HEADER_SIGNATURE } = require('../signing');
 
 const router = express.Router();
 const uuidSchema = z.string().uuid();
@@ -75,6 +76,42 @@ router.post('/', async (req, res, next) => {
     return res.status(202).json(serializeEvent(event));
   } catch (err) {
     return next(err);
+  }
+});
+
+// GET /api/events/:id/signature — the signing headers a receiver should expect
+// for this event, computed from the subscription's stored secret over the exact
+// raw_body bytes. The timestamp (and thus the signature) is freshly computed per
+// call — a verification sample, not a record of a past delivery.
+router.get('/:id/signature', async (req, res, next) => {
+  try {
+    if (!uuidSchema.safeParse(req.params.id).success) {
+      throw new ApiError(400, 'id must be a UUID');
+    }
+
+    const { rows } = await db.query('SELECT * FROM event WHERE id = $1', [req.params.id]);
+    if (rows.length === 0) {
+      throw new ApiError(404, 'Event not found');
+    }
+    const event = rows[0];
+
+    const { rows: subRows } = await db.query('SELECT secret FROM subscription WHERE id = $1', [event.subscription_id]);
+    const secret = subRows[0] ? subRows[0].secret : null;
+
+    if (!secret) {
+      return res.status(200).json({ event_id: event.id, signed: false });
+    }
+
+    const timestamp = Math.floor(Date.now() / 1000).toString();
+    res.status(200).json({
+      event_id: event.id,
+      signed: true,
+      header: HEADER_SIGNATURE,
+      timestamp,
+      signature: signatureHeader(secret, timestamp, event.raw_body),
+    });
+  } catch (err) {
+    next(err);
   }
 });
 
