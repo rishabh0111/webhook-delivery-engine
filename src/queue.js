@@ -19,7 +19,8 @@ const queue = new Queue(QUEUE_NAME, {
   defaultJobOptions: {
     // 5 attempts with exponential backoff (â‰ˆ 60s -> 120s -> 240s -> 480s).
     attempts: 5,
-    backoff: { type: 'exponential', delay: 60000 },
+    // was: backoff: { type: 'exponential', delay: 60000 },
+    backoff: { type: 'exponential', delay: config.backoffDelayMs },
     removeOnComplete: true,
     removeOnFail: false,
   },

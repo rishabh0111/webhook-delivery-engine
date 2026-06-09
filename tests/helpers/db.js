@@ -9,7 +9,7 @@ async function setupDb() {
 
 async function resetDb() {
   await pool.query(
-    'TRUNCATE TABLE delivery_attempt, event, subscription RESTART IDENTITY CASCADE'
+    'TRUNCATE TABLE dead_letter, delivery_attempt, event, subscription RESTART IDENTITY CASCADE'
   );
 }
 
