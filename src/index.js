@@ -7,13 +7,16 @@ const { pool } = require('./db');
 const { runMigrations } = require('./migrate');
 const { queue, connection } = require('./queue');
 const { createWorker } = require('./worker');
+const { createReconciler, scheduleReconciler } = require('./reconciler');
 
-// Run migrations, then start the HTTP server AND the BullMQ worker in this one
-// process (the free host offers no separate background worker).
 async function start() {
   await runMigrations(pool);
 
   const worker = createWorker();
+
+  // Outbox backstop: a repeatable job sweeps for orphaned non-terminal events.
+  const reconciler = createReconciler();
+  await scheduleReconciler(reconciler.queue);
 
   const server = app.listen(config.port, () => {
     logger.info({ port: config.port }, 'server listening');
@@ -24,6 +27,9 @@ async function start() {
     server.close(async () => {
       try {
         await worker.close();
+        await reconciler.worker.close();
+        await reconciler.queue.close();
+        reconciler.connection.disconnect();
         await queue.close();
         connection.disconnect();
         await pool.end();
