@@ -18,6 +18,9 @@ const config = {
   reconcilePendingAgeMs: Number(process.env.RECONCILE_PENDING_AGE_MS) || 60 * 1000,
   reconcileDeliveringAgeMs:
     Number(process.env.RECONCILE_DELIVERING_AGE_MS) || 5 * 60 * 1000,
+  // /metrics is cached this long so a polling dashboard does not hammer the
+  // datastores. Read at call time so tests can disable it.
+  metricsCacheTtlMs: Number(process.env.METRICS_CACHE_TTL_MS) || 10 * 1000,
   logLevel:
     process.env.LOG_LEVEL ||
     (process.env.NODE_ENV === 'test' ? 'silent' : 'info'),

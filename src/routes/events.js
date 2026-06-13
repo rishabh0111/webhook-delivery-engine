@@ -79,6 +79,57 @@ router.post('/', async (req, res, next) => {
   }
 });
 
+// GET /api/events — recent events with attempt timelines, newest first. For
+// events currently `dead`, the id of the most recent unreplayed dead_letter row
+// is attached as `dead_letter_id` so the dashboard can offer one-click replay.
+router.get('/', async (req, res, next) => {
+  try {
+    const limit = Math.min(Math.max(Number(req.query.limit) || 20, 1), 100);
+
+    const { rows: eventRows } = await db.query(
+      `SELECT * FROM event ORDER BY created_at DESC LIMIT $1`,
+      [limit]
+    );
+    if (eventRows.length === 0) {
+      return res.status(200).json([]);
+    }
+
+    const ids = eventRows.map((e) => e.id);
+
+    const { rows: attemptRows } = await db.query(
+      `SELECT event_id, attempt_number, status_code, duration_ms, response_body, error, created_at
+       FROM delivery_attempt
+       WHERE event_id = ANY($1)
+       ORDER BY event_id, attempt_number`,
+      [ids]
+    );
+    const attemptsByEvent = new Map();
+    for (const a of attemptRows) {
+      if (!attemptsByEvent.has(a.event_id)) attemptsByEvent.set(a.event_id, []);
+      attemptsByEvent.get(a.event_id).push(a);
+    }
+
+    const { rows: dlRows } = await db.query(
+      `SELECT DISTINCT ON (event_id) id, event_id
+       FROM dead_letter
+       WHERE event_id = ANY($1) AND replayed_at IS NULL
+       ORDER BY event_id, created_at DESC`,
+      [ids]
+    );
+    const deadLetterByEvent = new Map(dlRows.map((d) => [d.event_id, d.id]));
+
+    const events = eventRows.map((row) => ({
+      ...serializeEvent(row),
+      attempts: attemptsByEvent.get(row.id) || [],
+      dead_letter_id: deadLetterByEvent.get(row.id) || null,
+    }));
+
+    res.status(200).json(events);
+  } catch (err) {
+    next(err);
+  }
+});
+
 // GET /api/events/:id/signature — the signing headers a receiver should expect
 // for this event, computed from the subscription's stored secret over the exact
 // raw_body bytes. The timestamp (and thus the signature) is freshly computed per

@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Webhook Delivery Engine — Dashboard</title>
+  <!-- Set the theme before first paint to avoid a flash; light is the default. -->
+  <script>
+    document.documentElement.setAttribute(
+      'data-theme', localStorage.getItem('wde-theme') || 'light'
+    );
+  </script>
+  <style>
+    /* ---------- Light theme (default) ---------- */
+    :root {
+      --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      --sans: "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+
+      --bg-base: #eef1f8;
+      --blob-1: rgba(124, 92, 255, 0.40);
+      --blob-2: rgba(255, 122, 162, 0.34);
+      --blob-3: rgba(45, 212, 191, 0.34);
+      --blob-4: rgba(96, 165, 250, 0.34);
+
+      --fg: #1b2030;
+      --muted: #5a6478;
+      --heading: #2b3450;
+
+      --glass-bg: rgba(255, 255, 255, 0.55);
+      --glass-bg-2: rgba(255, 255, 255, 0.42);
+      --glass-border: rgba(255, 255, 255, 0.75);
+      --glass-shadow: 0 8px 32px rgba(31, 38, 72, 0.16);
+      --hairline: rgba(43, 52, 80, 0.12);
+
+      --input-bg: rgba(255, 255, 255, 0.55);
+      --input-border: rgba(43, 52, 80, 0.16);
+
+      --accent-1: #7c5cff;
+      --accent-2: #4f9dff;
+      --accent-fg: #ffffff;
+      --accent-ring: rgba(124, 92, 255, 0.45);
+
+      --ok: #0f9d58;
+      --warn: #d98e00;
+      --bad: #e5484d;
+      --info: #2f7bf6;
+    }
+
+    /* ---------- Dark theme ---------- */
+    :root[data-theme="dark"] {
+      --bg-base: #0b0e1a;
+      --blob-1: rgba(124, 92, 255, 0.45);
+      --blob-2: rgba(236, 72, 153, 0.34);
+      --blob-3: rgba(20, 184, 166, 0.34);
+      --blob-4: rgba(56, 132, 255, 0.40);
+
+      --fg: #e7ebf6;
+      --muted: #97a1bb;
+      --heading: #c5cde6;
+
+      --glass-bg: rgba(22, 27, 45, 0.55);
+      --glass-bg-2: rgba(22, 27, 45, 0.40);
+      --glass-border: rgba(255, 255, 255, 0.12);
+      --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+      --hairline: rgba(255, 255, 255, 0.10);
+
+      --input-bg: rgba(255, 255, 255, 0.06);
+      --input-border: rgba(255, 255, 255, 0.14);
+
+      --accent-1: #8b6bff;
+      --accent-2: #4f9dff;
+      --accent-fg: #ffffff;
+      --accent-ring: rgba(139, 107, 255, 0.55);
+
+      --ok: #3ddc84;
+      --warn: #f0b73a;
+      --bad: #ff6b6f;
+      --info: #6aa8ff;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { min-height: 100%; }
+    body {
+      margin: 0; color: var(--fg); font: 14px/1.55 var(--sans);
+      background:
+        radial-gradient(42rem 42rem at 8% -5%, var(--blob-1), transparent 60%),
+        radial-gradient(38rem 38rem at 98% 8%, var(--blob-2), transparent 60%),
+        radial-gradient(46rem 46rem at 10% 105%, var(--blob-3), transparent 60%),
+        radial-gradient(40rem 40rem at 95% 100%, var(--blob-4), transparent 60%),
+        var(--bg-base);
+      background-attachment: fixed;
+      -webkit-font-smoothing: antialiased;
+      transition: color .25s ease;
+    }
+
+    header {
+      position: sticky; top: 0; z-index: 20;
+      padding: 14px 24px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+      background: var(--glass-bg);
+      border-bottom: 1px solid var(--glass-border);
+      backdrop-filter: blur(16px) saturate(160%);
+      -webkit-backdrop-filter: blur(16px) saturate(160%);
+    }
+    header h1 {
+      font-size: 18px; margin: 0; font-weight: 700; letter-spacing: -.01em;
+      background: linear-gradient(120deg, var(--accent-1), var(--accent-2));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    header .dot {
+      width: 9px; height: 9px; border-radius: 50%; background: var(--ok);
+      box-shadow: 0 0 0 4px color-mix(in srgb, var(--ok) 25%, transparent);
+    }
+    header .meta { color: var(--muted); font-size: 12px; }
+    header .spacer { margin-left: auto; }
+
+    /* Theme switch — sliding toggle with monochrome sun/moon icons. */
+    .theme-switch { display: inline-flex; align-items: center; cursor: pointer; }
+    .theme-switch input { display: none; }
+    .theme-track {
+      position: relative; width: 58px; height: 28px; border-radius: 999px;
+      background: var(--glass-bg-2); border: 1px solid var(--glass-border);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      transition: background .2s, box-shadow .2s;
+    }
+    .theme-switch:hover .theme-track { box-shadow: var(--glass-shadow); }
+    .theme-track > svg {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      width: 14px; height: 14px; color: var(--muted); opacity: .6;
+    }
+    .theme-track > svg.sun { left: 8px; }
+    .theme-track > svg.moon { right: 8px; }
+    .theme-knob {
+      position: absolute; top: 2px; left: 2px; width: 24px; height: 24px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+      box-shadow: 0 1px 5px rgba(0, 0, 0, .35);
+      display: flex; align-items: center; justify-content: center; transition: transform .22s ease;
+    }
+    .theme-knob svg { width: 13px; height: 13px; color: #fff; }
+    .theme-knob .moon { display: none; }
+    :root[data-theme="dark"] .theme-knob { transform: translateX(30px); }
+    :root[data-theme="dark"] .theme-knob .sun { display: none; }
+    :root[data-theme="dark"] .theme-knob .moon { display: inline; }
+
+    main { padding: 24px; max-width: 1120px; margin: 0 auto; display: grid; gap: 22px; }
+    .grid { display: grid; gap: 22px; grid-template-columns: 1fr 1fr; }
+    @media (max-width: 800px) { .grid { grid-template-columns: 1fr; } }
+
+    .panel {
+      position: relative; padding: 18px;
+      background: var(--glass-bg); border: 1px solid var(--glass-border);
+      border-radius: 18px; box-shadow: var(--glass-shadow);
+      backdrop-filter: blur(16px) saturate(150%);
+      -webkit-backdrop-filter: blur(16px) saturate(150%);
+    }
+    .panel::before {
+      content: ''; position: absolute; inset: 0 0 auto 0; height: 1px; border-radius: 18px 18px 0 0;
+      background: linear-gradient(90deg, transparent, var(--glass-border), transparent);
+    }
+    .panel h2 {
+      font-size: 12px; margin: 0 0 12px; text-transform: uppercase;
+      letter-spacing: .08em; color: var(--heading); font-weight: 700;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .panel h2::before {
+      content: ''; width: 8px; height: 8px; border-radius: 3px;
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+    }
+    .panel .hint { color: var(--muted); font-size: 12px; margin: -4px 0 14px; }
+    .panel .hint b { color: var(--fg); }
+
+    label { display: block; font-size: 12px; color: var(--muted); margin: 8px 0 4px; }
+    input, textarea, select, button {
+      font: inherit; color: var(--fg); width: 100%;
+      background: var(--input-bg); border: 1px solid var(--input-border);
+      border-radius: 10px; padding: 9px 12px; transition: border-color .15s, box-shadow .15s;
+    }
+    input::placeholder, textarea::placeholder { color: color-mix(in srgb, var(--muted) 75%, transparent); }
+    input:focus, textarea:focus, select:focus {
+      outline: none; border-color: var(--accent-2);
+      box-shadow: 0 0 0 3px var(--accent-ring);
+    }
+    textarea { font-family: var(--mono); min-height: 76px; resize: vertical; }
+
+    button {
+      width: auto; margin-top: 12px; cursor: pointer; font-weight: 600;
+      color: var(--accent-fg); border: none; border-radius: 10px; padding: 9px 16px;
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+      box-shadow: 0 6px 18px color-mix(in srgb, var(--accent-1) 35%, transparent);
+      transition: transform .12s, box-shadow .2s, filter .15s;
+    }
+    button:hover { transform: translateY(-1px); filter: brightness(1.06); }
+    button:active { transform: translateY(0); }
+    button:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+    button.secondary {
+      background: var(--glass-bg-2); color: var(--fg);
+      border: 1px solid var(--glass-border); box-shadow: none;
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    }
+    button.secondary:hover { border-color: var(--accent-2); }
+
+    .row { display: flex; gap: 12px; align-items: center; }
+    .row > label { margin: 0; }
+
+    .metrics { display: flex; gap: 12px; flex-wrap: wrap; }
+    .metric {
+      flex: 1 1 92px; min-width: 92px; text-align: center; padding: 12px 8px;
+      border-radius: 14px; border: 1px solid var(--hairline);
+      background: var(--glass-bg-2);
+    }
+    .metric .n {
+      font-size: 26px; font-weight: 700; font-family: var(--mono); line-height: 1.1;
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .metric .k { font-size: 10.5px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-top: 2px; }
+    .metric:nth-child(2) .n { background: linear-gradient(135deg, var(--info), var(--accent-2)); -webkit-background-clip: text; background-clip: text; }
+    .metric:nth-child(5) .n { background: linear-gradient(135deg, var(--ok), #2dd4bf); -webkit-background-clip: text; background-clip: text; }
+    .metric:nth-child(6) .n { background: linear-gradient(135deg, var(--bad), #fb7185); -webkit-background-clip: text; background-clip: text; }
+
+    .out {
+      font-family: var(--mono); font-size: 12px; white-space: pre-wrap;
+      word-break: break-all; background: var(--glass-bg-2); border: 1px solid var(--hairline);
+      border-radius: 12px; padding: 11px; margin-top: 12px; color: var(--muted);
+    }
+
+    .event {
+      border: 1px solid var(--hairline); border-radius: 14px; padding: 14px; margin-bottom: 12px;
+      background: var(--glass-bg-2);
+    }
+    .event .top { display: flex; justify-content: space-between; gap: 12px; align-items: center; }
+    .event code { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+    .badge {
+      font-size: 10.5px; padding: 3px 10px; border-radius: 999px; text-transform: uppercase;
+      letter-spacing: .05em; font-weight: 700; border: 1px solid transparent;
+    }
+    .b-pending    { background: color-mix(in srgb, var(--info) 16%, transparent); color: var(--info); border-color: color-mix(in srgb, var(--info) 35%, transparent); }
+    .b-delivering { background: color-mix(in srgb, var(--warn) 18%, transparent); color: var(--warn); border-color: color-mix(in srgb, var(--warn) 38%, transparent); }
+    .b-delivered  { background: color-mix(in srgb, var(--ok) 16%, transparent);   color: var(--ok);   border-color: color-mix(in srgb, var(--ok) 35%, transparent); }
+    .b-failed, .b-dead { background: color-mix(in srgb, var(--bad) 16%, transparent); color: var(--bad); border-color: color-mix(in srgb, var(--bad) 38%, transparent); }
+    .attempts { margin: 10px 0 0; padding: 0; list-style: none; font-size: 12px; }
+    .attempts li { display: flex; gap: 10px; color: var(--muted); padding: 4px 0;
+      border-top: 1px dashed var(--hairline); flex-wrap: wrap; align-items: center; }
+    .attempts .sc-ok { color: var(--ok); font-weight: 600; } .attempts .sc-bad { color: var(--bad); font-weight: 600; }
+    .empty { color: var(--muted); font-style: italic; }
+    .err { color: var(--bad); }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <span class="dot" title="live"></span>
+    <h1>Webhook Delivery Engine</h1>
+    <span class="meta">auto-refreshing every 10s Â· <span id="lastUpdate">—</span></span>
+    <span class="spacer"></span>
+    <label class="theme-switch" title="Toggle light / dark theme">
+      <input type="checkbox" id="themeToggle" aria-label="Toggle dark mode" />
+      <span class="theme-track">
+        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+        <span class="theme-knob">
+          <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+          <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+        </span>
+      </span>
+    </label>
+  </header>
+
+  <main>
+    <div class="panel">
+      <h2>Metrics</h2>
+      <div class="metrics" id="metrics"><span class="empty">loadingâ€¦</span></div>
+    </div>
+
+    <div class="grid">
+      <div class="panel">
+        <h2>Register subscription</h2>
+        <form id="subForm">
+          <label for="targetUrl">Target URL</label>
+          <input id="targetUrl" type="url" placeholder="https://example.com/hook" required />
+          <label for="subDesc">Description (optional)</label>
+          <input id="subDesc" type="text" placeholder="My receiver" />
+          <div class="row" style="margin-top:10px">
+            <input id="genSecret" type="checkbox" checked style="width:auto" />
+            <label for="genSecret">Generate signing secret</label>
+          </div>
+          <button type="submit">Create subscription</button>
+        </form>
+        <div class="out" id="subOut" hidden></div>
+      </div>
+
+      <div class="panel">
+        <h2>Create test event</h2>
+        <form id="eventForm">
+          <label for="eventSub">Subscription</label>
+          <select id="eventSub" required></select>
+          <label for="eventBody">Payload (JSON)</label>
+          <textarea id="eventBody">{ "hello": "world" }</textarea>
+          <button type="submit">Send test event</button>
+        </form>
+        <div class="out" id="eventOut" hidden></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Recent events</h2>
+      <div id="events"><span class="empty">loadingâ€¦</span></div>
+    </div>
+  </main>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const esc = (s) => String(s).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+
+    // ---- Theme (light default, persisted) ----
+    const THEME_KEY = 'wde-theme';
+    function applyTheme(t) {
+      document.documentElement.setAttribute('data-theme', t);
+      $('themeToggle').checked = t === 'dark';
+    }
+    applyTheme(localStorage.getItem(THEME_KEY) || 'light');
+    $('themeToggle').addEventListener('change', (ev) => {
+      const next = ev.target.checked ? 'dark' : 'light';
+      localStorage.setItem(THEME_KEY, next);
+      applyTheme(next);
+    });
+
+    async function api(path, opts) {
+      const res = await fetch(path, opts);
+      const text = await res.text();
+      let body;
+      try { body = text ? JSON.parse(text) : null; } catch { body = text; }
+      if (!res.ok) {
+        const msg = body && body.error ? body.error.message : (body || res.statusText);
+        throw new Error(typeof msg === 'string' ? msg : JSON.stringify(msg));
+      }
+      return body;
+    }
+
+    async function refresh() {
+      try {
+        const [metrics, events, subs] = await Promise.all([
+          api('/metrics'),
+          api('/api/events?limit=20'),
+          api('/api/subscriptions'),
+        ]);
+        renderMetrics(metrics);
+        renderEvents(events);
+        renderSubOptions(subs);
+        $('lastUpdate').textContent = 'updated ' + new Date().toLocaleTimeString();
+      } catch (err) {
+        $('lastUpdate').innerHTML = '<span class="err">refresh failed: ' + esc(err.message) + '</span>';
+      }
+    }
+
+    function renderMetrics(m) {
+      const cells = [
+        ['queue depth', m.queue.depth], ['active', m.queue.active], ['delayed', m.queue.delayed],
+        ['pending', m.events.pending], ['delivered', m.events.delivered], ['dead', m.events.dead],
+        ['total', m.events.total],
+      ];
+      $('metrics').innerHTML = cells
+        .map(([k, n]) => `<div class="metric"><div class="n">${n}</div><div class="k">${k}</div></div>`)
+        .join('') + (m.cached ? '<div class="metric"><div class="n">Â·</div><div class="k">cached</div></div>' : '');
+    }
+
+    function renderSubOptions(subs) {
+      const sel = $('eventSub');
+      const prev = sel.value;
+      sel.innerHTML = subs
+        .map((s) => `<option value="${s.id}">${esc(s.description || s.target_url)} — ${s.id.slice(0, 8)}</option>`)
+        .join('') || '<option value="" disabled>no subscriptions yet</option>';
+      if (prev) sel.value = prev;
+    }
+
+    function renderEvents(events) {
+      if (!events.length) { $('events').innerHTML = '<span class="empty">No events yet.</span>'; return; }
+      $('events').innerHTML = events.map((e) => {
+        const attempts = (e.attempts || []).map((a) => {
+          const sc = a.status_code
+            ? `<span class="${a.status_code >= 200 && a.status_code < 300 ? 'sc-ok' : 'sc-bad'}">${a.status_code}</span>`
+            : `<span class="sc-bad">${esc(a.error || 'no response')}</span>`;
+          return `<li><span>#${a.attempt_number}</span>${sc}<span>${a.duration_ms ?? '?'}ms</span>` +
+            `<span>${new Date(a.created_at).toLocaleTimeString()}</span></li>`;
+        }).join('') || '<li class="empty">no attempts yet</li>';
+        const replay = e.dead_letter_id
+          ? `<button class="secondary" style="margin:0" onclick="replay('${e.dead_letter_id}')">Replay</button>`
+          : '';
+        return `<div class="event">
+          <div class="top">
+            <code>${e.id}</code>
+            <span style="display:flex;gap:10px;align-items:center">
+              <span class="badge b-${e.status}">${e.status}</span>${replay}
+            </span>
+          </div>
+          <ul class="attempts">${attempts}</ul>
+        </div>`;
+      }).join('');
+    }
+
+    $('subForm').addEventListener('submit', async (ev) => {
+      ev.preventDefault();
+      const out = $('subOut'); out.hidden = false; out.textContent = 'creatingâ€¦';
+      try {
+        const sub = await api('/api/subscriptions', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            target_url: $('targetUrl').value,
+            description: $('subDesc').value || undefined,
+            generate_secret: $('genSecret').checked,
+          }),
+        });
+        out.textContent = `Subscription ${sub.id} created.\n` +
+          (sub.secret ? `Secret (shown once): ${sub.secret}` : 'No signing secret.');
+        await refresh();
+      } catch (err) { out.innerHTML = '<span class="err">' + esc(err.message) + '</span>'; }
+    });
+
+    $('eventForm').addEventListener('submit', async (ev) => {
+      ev.preventDefault();
+      const out = $('eventOut'); out.hidden = false; out.textContent = 'sendingâ€¦';
+      const subId = $('eventSub').value;
+      if (!subId) { out.innerHTML = '<span class="err">Register a subscription first.</span>'; return; }
+      try {
+        const event = await api('/api/events', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-Subscription-Id': subId },
+          body: $('eventBody').value,
+        });
+        let line = `Event ${event.id} accepted (status: ${event.status}).`;
+        try {
+          const sig = await api(`/api/events/${event.id}/signature`);
+          line += sig.signed
+            ? `\n${sig.header}: ${sig.signature}\nx-webhook-timestamp: ${sig.timestamp}`
+            : '\n(subscription has no secret — deliveries are unsigned)';
+        } catch { /* signature is best-effort */ }
+        out.textContent = line;
+        await refresh();
+      } catch (err) { out.innerHTML = '<span class="err">' + esc(err.message) + '</span>'; }
+    });
+
+    async function replay(deadLetterId) {
+      try {
+        await api(`/api/dead-letters/${deadLetterId}/replay`, { method: 'POST' });
+        await refresh();
+      } catch (err) { alert('Replay failed: ' + err.message); }
+    }
+    window.replay = replay;
+
+    refresh();
+    setInterval(refresh, 10000);
+  </script>
+</body>
+</html>
