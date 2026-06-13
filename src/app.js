@@ -6,18 +6,17 @@ const logger = require('./logger');
 const healthRouter = require('./routes/health');
 const subscriptionsRouter = require('./routes/subscriptions');
 const eventsRouter = require('./routes/events');
+const deadLettersRouter = require('./routes/dead-letters');
 const { notFoundHandler, errorHandler } = require('./errors');
 
 const app = express();
 
 app.use(pinoHttp({ logger }));
 
-// Body parsers are mounted per-route: the events ingress needs the EXACT raw
-// bytes (express.raw -> Buffer) to persist and sign verbatim, while the JSON
-// APIs want a parsed object.
 app.use('/health', healthRouter);
 app.use('/api/subscriptions', express.json(), subscriptionsRouter);
 app.use('/api/events', express.raw({ type: '*/*', limit: '1mb' }), eventsRouter);
+app.use('/api/dead-letters', deadLettersRouter);
 
 app.use(notFoundHandler);
 app.use(errorHandler);
