@@ -17,10 +17,10 @@
       --sans: "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
 
       --bg-base: #eef1f8;
-      --blob-1: rgba(124, 92, 255, 0.40);
-      --blob-2: rgba(255, 122, 162, 0.34);
-      --blob-3: rgba(45, 212, 191, 0.34);
-      --blob-4: rgba(96, 165, 250, 0.34);
+      --blob-1: rgba(124, 92, 255, 0.40);   /* violet */
+      --blob-2: rgba(255, 122, 162, 0.34);  /* rose   */
+      --blob-3: rgba(45, 212, 191, 0.34);   /* teal   */
+      --blob-4: rgba(96, 165, 250, 0.34);   /* sky    */
 
       --fg: #1b2030;
       --muted: #5a6478;
@@ -123,12 +123,14 @@
       transition: background .2s, box-shadow .2s;
     }
     .theme-switch:hover .theme-track { box-shadow: var(--glass-shadow); }
+    /* faint icons fixed at each end as hints */
     .theme-track > svg {
       position: absolute; top: 50%; transform: translateY(-50%);
       width: 14px; height: 14px; color: var(--muted); opacity: .6;
     }
     .theme-track > svg.sun { left: 8px; }
     .theme-track > svg.moon { right: 8px; }
+    /* sliding knob carries the active icon */
     .theme-knob {
       position: absolute; top: 2px; left: 2px; width: 24px; height: 24px; border-radius: 50%;
       background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
@@ -152,6 +154,7 @@
       backdrop-filter: blur(16px) saturate(150%);
       -webkit-backdrop-filter: blur(16px) saturate(150%);
     }
+    /* subtle top gradient hairline for that glass edge */
     .panel::before {
       content: ''; position: absolute; inset: 0 0 auto 0; height: 1px; border-radius: 18px 18px 0 0;
       background: linear-gradient(90deg, transparent, var(--glass-border), transparent);
@@ -200,6 +203,8 @@
 
     .row { display: flex; gap: 12px; align-items: center; }
     .row > label { margin: 0; }
+    .controls { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    .controls button { margin-top: 0; }
 
     .metrics { display: flex; gap: 12px; flex-wrap: wrap; }
     .metric {
@@ -213,6 +218,7 @@
       -webkit-background-clip: text; background-clip: text; color: transparent;
     }
     .metric .k { font-size: 10.5px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-top: 2px; }
+    /* a touch of varied color across the metric row */
     .metric:nth-child(2) .n { background: linear-gradient(135deg, var(--info), var(--accent-2)); -webkit-background-clip: text; background-clip: text; }
     .metric:nth-child(5) .n { background: linear-gradient(135deg, var(--ok), #2dd4bf); -webkit-background-clip: text; background-clip: text; }
     .metric:nth-child(6) .n { background: linear-gradient(135deg, var(--bad), #fb7185); -webkit-background-clip: text; background-clip: text; }
@@ -223,12 +229,60 @@
       border-radius: 12px; padding: 11px; margin-top: 12px; color: var(--muted);
     }
 
+    .scenarios { display: grid; gap: 10px; grid-template-columns: 1fr 1fr; }
+    @media (max-width: 800px) { .scenarios { grid-template-columns: 1fr; } }
+    .scenario {
+      text-align: left; width: 100%; margin: 0; padding: 12px 14px; color: var(--fg);
+      background: var(--glass-bg-2); border: 1px solid var(--glass-border);
+      border-radius: 14px; box-shadow: none; position: relative; overflow: hidden;
+      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    }
+    .scenario::before {
+      content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+      background: linear-gradient(180deg, var(--accent-1), var(--accent-2)); opacity: .85;
+    }
+    .scenario:hover { transform: translateY(-1px); border-color: var(--accent-2); filter: none; }
+    .scenario b { display: block; font-size: 13px; margin-left: 4px; }
+    .scenario span { color: var(--muted); font-size: 11px; margin-left: 4px; }
+    /* rotate the accent-bar hue across the grid for more color */
+    .scenario:nth-child(2)::before { background: linear-gradient(180deg, var(--info), #2dd4bf); }
+    .scenario:nth-child(3)::before { background: linear-gradient(180deg, var(--ok), #2dd4bf); }
+    .scenario:nth-child(4)::before { background: linear-gradient(180deg, var(--warn), #f59e0b); }
+    .scenario:nth-child(5)::before { background: linear-gradient(180deg, var(--bad), #fb7185); }
+    .scenario:nth-child(6)::before { background: linear-gradient(180deg, var(--bad), var(--warn)); }
+    .scenario:nth-child(7)::before { background: linear-gradient(180deg, var(--accent-2), var(--info)); }
+    .scenario:nth-child(8)::before { background: linear-gradient(180deg, #2dd4bf, var(--accent-1)); }
+
+    /* Toggle switch */
+    .switch { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; }
+    .switch input { display: none; }
+    .switch .track {
+      width: 40px; height: 22px; border-radius: 999px; padding: 0; margin: 0;
+      background: color-mix(in srgb, var(--muted) 45%, transparent);
+      border: 1px solid var(--hairline); position: relative; transition: background .18s;
+    }
+    .switch .track::after {
+      content: ''; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px;
+      border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.3);
+      transition: transform .18s;
+    }
+    .switch input:checked + .track {
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+    }
+    .switch input:checked + .track::after { transform: translateX(18px); }
+    .switch .lbl { font-size: 12px; color: var(--muted); }
+
     .event {
       border: 1px solid var(--hairline); border-radius: 14px; padding: 14px; margin-bottom: 12px;
       background: var(--glass-bg-2);
     }
     .event .top { display: flex; justify-content: space-between; gap: 12px; align-items: center; }
     .event code { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+    .event .payload {
+      font-family: var(--mono); font-size: 11px; color: var(--muted);
+      background: color-mix(in srgb, var(--fg) 6%, transparent); border: 1px solid var(--hairline);
+      border-radius: 10px; padding: 7px 9px; margin: 9px 0 0; white-space: pre-wrap; word-break: break-all;
+    }
     .badge {
       font-size: 10.5px; padding: 3px 10px; border-radius: 999px; text-transform: uppercase;
       letter-spacing: .05em; font-weight: 700; border: 1px solid transparent;
@@ -237,10 +291,14 @@
     .b-delivering { background: color-mix(in srgb, var(--warn) 18%, transparent); color: var(--warn); border-color: color-mix(in srgb, var(--warn) 38%, transparent); }
     .b-delivered  { background: color-mix(in srgb, var(--ok) 16%, transparent);   color: var(--ok);   border-color: color-mix(in srgb, var(--ok) 35%, transparent); }
     .b-failed, .b-dead { background: color-mix(in srgb, var(--bad) 16%, transparent); color: var(--bad); border-color: color-mix(in srgb, var(--bad) 38%, transparent); }
+    .verdict { font-size: 11px; color: var(--muted); margin-top: 8px; }
+    .verdict .ok { color: var(--ok); font-weight: 600; } .verdict .bad { color: var(--bad); font-weight: 600; }
+    .reason { color: var(--bad); font-size: 12px; margin-top: 8px; }
     .attempts { margin: 10px 0 0; padding: 0; list-style: none; font-size: 12px; }
     .attempts li { display: flex; gap: 10px; color: var(--muted); padding: 4px 0;
       border-top: 1px dashed var(--hairline); flex-wrap: wrap; align-items: center; }
     .attempts .sc-ok { color: var(--ok); font-weight: 600; } .attempts .sc-bad { color: var(--bad); font-weight: 600; }
+    .attempts .resp { color: color-mix(in srgb, var(--muted) 80%, transparent); font-style: italic; }
     .empty { color: var(--muted); font-style: italic; }
     .err { color: var(--bad); }
 
@@ -253,7 +311,7 @@
   <header>
     <span class="dot" title="live"></span>
     <h1>Webhook Delivery Engine</h1>
-    <span class="meta">auto-refreshing every 10s Â· <span id="lastUpdate">—</span></span>
+    <span class="meta">auto-refreshing every 10s · <span id="lastUpdate">—</span></span>
     <span class="spacer"></span>
     <label class="theme-switch" title="Toggle light / dark theme">
       <input type="checkbox" id="themeToggle" aria-label="Toggle dark mode" />
@@ -271,12 +329,40 @@
   <main>
     <div class="panel">
       <h2>Metrics</h2>
-      <div class="metrics" id="metrics"><span class="empty">loadingâ€¦</span></div>
+      <div class="metrics" id="metrics"><span class="empty">loading…</span></div>
+    </div>
+
+    <div class="panel" id="demoPanel" hidden>
+      <h2>Demo controls</h2>
+      <p class="hint">Self-contained walkthrough — no external services. Seeds subscriptions
+        pointed at an in-process receiver that returns controllable outcomes and verifies the
+        HMAC. <b>Fast mode</b> compresses retry backoff (~2s base) and the delivery timeout so
+        every path plays out in seconds, not minutes.</p>
+      <div class="controls">
+        <label class="switch">
+          <input type="checkbox" id="fastMode" />
+          <span class="track"></span>
+          <span class="lbl">Fast mode</span>
+        </label>
+        <button id="seedBtn" class="secondary">Seed demo data</button>
+        <button id="resetBtn" class="secondary">Reset events</button>
+        <button id="reconcileBtn" class="secondary">Run reconciler now</button>
+      </div>
+      <div class="out" id="demoOut" hidden></div>
+    </div>
+
+    <div class="panel" id="scenarioPanel" hidden>
+      <h2>Scenarios</h2>
+      <p class="hint">One click drives a full path end-to-end. Watch the event appear below
+        and move through its states; with fast mode on, dead-letters land in ~30s.</p>
+      <div class="scenarios" id="scenarios"></div>
+      <div class="out" id="scenarioOut" hidden></div>
     </div>
 
     <div class="grid">
       <div class="panel">
         <h2>Register subscription</h2>
+        <p class="hint">Manual entry — point at any real external URL to show a true network hop.</p>
         <form id="subForm">
           <label for="targetUrl">Target URL</label>
           <input id="targetUrl" type="url" placeholder="https://example.com/hook" required />
@@ -293,6 +379,7 @@
 
       <div class="panel">
         <h2>Create test event</h2>
+        <p class="hint">Manual entry — pick any subscription and craft the payload.</p>
         <form id="eventForm">
           <label for="eventSub">Subscription</label>
           <select id="eventSub" required></select>
@@ -306,7 +393,7 @@
 
     <div class="panel">
       <h2>Recent events</h2>
-      <div id="events"><span class="empty">loadingâ€¦</span></div>
+      <div id="events"><span class="empty">loading…</span></div>
     </div>
   </main>
 
@@ -327,27 +414,35 @@
       applyTheme(next);
     });
 
-    async function api(path, opts) {
+    let demoEnabled = false;     // are the /api/demo routes available?
+    let demoSubs = null;         // scenario-key -> subscription, from /api/demo/seed
+
+    // Return { status, body } so callers can distinguish e.g. 202 vs 200.
+    async function apiRaw(path, opts) {
       const res = await fetch(path, opts);
       const text = await res.text();
       let body;
       try { body = text ? JSON.parse(text) : null; } catch { body = text; }
-      if (!res.ok) {
-        const msg = body && body.error ? body.error.message : (body || res.statusText);
+      return { status: res.status, ok: res.ok, body };
+    }
+
+    async function api(path, opts) {
+      const { ok, body, status } = await apiRaw(path, opts);
+      if (!ok) {
+        const msg = body && body.error ? body.error.message : (body || status);
         throw new Error(typeof msg === 'string' ? msg : JSON.stringify(msg));
       }
       return body;
     }
 
+    // ---- Metrics + recent events + receiver verdicts (auto-refreshed) ----
     async function refresh() {
       try {
-        const [metrics, events, subs] = await Promise.all([
-          api('/metrics'),
-          api('/api/events?limit=20'),
-          api('/api/subscriptions'),
-        ]);
+        const calls = [api('/metrics'), api('/api/events?limit=20'), api('/api/subscriptions')];
+        calls.push(demoEnabled ? api('/demo/receiver/log').catch(() => []) : Promise.resolve([]));
+        const [metrics, events, subs, recv] = await Promise.all(calls);
         renderMetrics(metrics);
-        renderEvents(events);
+        renderEvents(events, recv);
         renderSubOptions(subs);
         $('lastUpdate').textContent = 'updated ' + new Date().toLocaleTimeString();
       } catch (err) {
@@ -363,7 +458,7 @@
       ];
       $('metrics').innerHTML = cells
         .map(([k, n]) => `<div class="metric"><div class="n">${n}</div><div class="k">${k}</div></div>`)
-        .join('') + (m.cached ? '<div class="metric"><div class="n">Â·</div><div class="k">cached</div></div>' : '');
+        .join('') + (m.cached ? '<div class="metric"><div class="n">·</div><div class="k">cached</div></div>' : '');
     }
 
     function renderSubOptions(subs) {
@@ -375,19 +470,37 @@
       if (prev) sel.value = prev;
     }
 
-    function renderEvents(events) {
+    function renderEvents(events, recv) {
+      // Latest receiver verdict per webhook id (= event id), newest first.
+      const verdict = new Map();
+      for (const r of recv || []) if (r.webhook_id && !verdict.has(r.webhook_id)) verdict.set(r.webhook_id, r);
+
       if (!events.length) { $('events').innerHTML = '<span class="empty">No events yet.</span>'; return; }
       $('events').innerHTML = events.map((e) => {
         const attempts = (e.attempts || []).map((a) => {
           const sc = a.status_code
             ? `<span class="${a.status_code >= 200 && a.status_code < 300 ? 'sc-ok' : 'sc-bad'}">${a.status_code}</span>`
             : `<span class="sc-bad">${esc(a.error || 'no response')}</span>`;
+          const resp = a.response_body ? `<span class="resp">${esc(String(a.response_body).slice(0, 80))}</span>` : '';
           return `<li><span>#${a.attempt_number}</span>${sc}<span>${a.duration_ms ?? '?'}ms</span>` +
-            `<span>${new Date(a.created_at).toLocaleTimeString()}</span></li>`;
+            `<span>${new Date(a.created_at).toLocaleTimeString()}</span>${resp}</li>`;
         }).join('') || '<li class="empty">no attempts yet</li>';
+
         const replay = e.dead_letter_id
           ? `<button class="secondary" style="margin:0" onclick="replay('${e.dead_letter_id}')">Replay</button>`
           : '';
+        const reason = e.dead_letter_reason
+          ? `<div class="reason">dead-letter: ${esc(e.dead_letter_reason)}</div>` : '';
+        const v = verdict.get(e.id);
+        const verdictLine = v
+          ? `<div class="verdict">receiver saw → ${v.status_returned} · signature: ` +
+            (v.signature_valid === true ? '<span class="ok">valid ✓</span>'
+              : v.signature_valid === false ? '<span class="bad">invalid ✗</span>'
+              : 'unsigned') + '</div>'
+          : '';
+        const payload = e.payload
+          ? `<div class="payload">${esc(String(e.payload).slice(0, 160))}</div>` : '';
+
         return `<div class="event">
           <div class="top">
             <code>${e.id}</code>
@@ -395,14 +508,143 @@
               <span class="badge b-${e.status}">${e.status}</span>${replay}
             </span>
           </div>
+          ${payload}${verdictLine}${reason}
           <ul class="attempts">${attempts}</ul>
         </div>`;
       }).join('');
     }
 
+    // ---- Demo controls ----
+    function demoMsg(el, text, isErr) {
+      el.hidden = false;
+      el.innerHTML = isErr ? '<span class="err">' + esc(text) + '</span>' : esc(text);
+    }
+
+    async function initDemo() {
+      try {
+        const s = await apiRaw('/api/demo/settings');
+        if (s.status === 404) return; // demo disabled — leave panels hidden
+        demoEnabled = true;
+        $('demoPanel').hidden = false;
+        $('scenarioPanel').hidden = false;
+        $('fastMode').checked = !!(s.body && s.body.fastMode);
+        renderScenarioButtons();
+      } catch { /* demo unavailable */ }
+    }
+
+    function renderScenarioButtons() {
+      const defs = [
+        ['happySigned', 'Happy path (signed)', '200 first try → delivered, signature verified'],
+        ['happyUnsigned', 'Happy path (unsigned)', 'No secret → delivered, unsigned'],
+        ['retrySuccess', 'Retry → success', '503 twice, then 200 → recovers'],
+        ['timeout', 'Timeout → retry', 'Receiver never answers → abort, then retry'],
+        ['permanent', 'Permanent failure', '401 → dead-lettered immediately'],
+        ['exhaust', 'Exhaust retries', '503 forever → dead-lettered after 5 attempts'],
+        ['idempotency', 'Idempotency conflict', 'Same key twice → 202 then 200, one event'],
+        ['replay', 'Replay a dead event', 'Recover the newest dead-lettered event'],
+      ];
+      $('scenarios').innerHTML = defs.map(([k, t, d]) =>
+        `<button class="scenario" onclick="scenario('${k}')"><b>${t}</b><span>${d}</span></button>`
+      ).join('');
+    }
+
+    async function ensureSeeded() {
+      if (demoSubs) return demoSubs;
+      const res = await api('/api/demo/seed', { method: 'POST' });
+      demoSubs = res.subscriptions;
+      await refresh();
+      return demoSubs;
+    }
+
+    // Post an event to a subscription; returns { status, body }.
+    function postEvent(subId, payload, headers) {
+      return apiRaw('/api/events', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Subscription-Id': subId, ...(headers || {}) },
+        body: typeof payload === 'string' ? payload : JSON.stringify(payload),
+      });
+    }
+
+    async function scenario(kind) {
+      const out = $('scenarioOut');
+      demoMsg(out, 'running…');
+      try {
+        const subs = await ensureSeeded();
+        const payload = (extra) => JSON.stringify({ scenario: kind, at: new Date().toISOString(), ...extra });
+
+        if (kind === 'idempotency') {
+          const key = 'demo-' + Math.random().toString(36).slice(2, 10);
+          const first = await postEvent(subs.signedOk.id, payload(), { 'Idempotency-Key': key });
+          const second = await postEvent(subs.signedOk.id, payload(), { 'Idempotency-Key': key });
+          demoMsg(out, `1st POST → ${first.status} (new event ${first.body.id.slice(0, 8)})\n` +
+            `2nd POST (same key) → ${second.status} (same event ${second.body.id.slice(0, 8)}) — no duplicate`);
+        } else if (kind === 'replay') {
+          const events = await api('/api/events?limit=20');
+          const dead = events.find((e) => e.dead_letter_id);
+          if (!dead) { demoMsg(out, 'No dead-lettered event to replay yet — run "Permanent failure" or "Exhaust retries" first.', true); return; }
+          await api(`/api/dead-letters/${dead.dead_letter_id}/replay`, { method: 'POST' });
+          demoMsg(out, `Replayed event ${dead.id.slice(0, 8)} — it flips to pending and re-delivers. A second replay would 409.`);
+        } else {
+          const map = {
+            happySigned: 'signedOk', happyUnsigned: 'unsignedOk', retrySuccess: 'flaky',
+            timeout: 'slow', permanent: 'reject', exhaust: 'down',
+          };
+          const sub = subs[map[kind]];
+          const res = await postEvent(sub.id, payload());
+          demoMsg(out, `Event ${res.body.id.slice(0, 8)} accepted (${res.status}) → ${sub.description}.\nWatch it below.`);
+        }
+        await refresh();
+      } catch (err) { demoMsg(out, err.message, true); }
+    }
+    window.scenario = scenario;
+
+    $('fastMode').addEventListener('change', async (ev) => {
+      try {
+        await api('/api/demo/settings', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ fastMode: ev.target.checked }),
+        });
+        demoMsg($('demoOut'), 'Fast mode ' + (ev.target.checked ? 'ON — compressed timing' : 'OFF — production timing'));
+      } catch (err) { demoMsg($('demoOut'), err.message, true); }
+    });
+
+    $('seedBtn').addEventListener('click', async () => {
+      demoMsg($('demoOut'), 'seeding…');
+      try {
+        demoSubs = (await api('/api/demo/seed', { method: 'POST' })).subscriptions;
+        // Speed things up automatically so the demo is watchable out of the box.
+        await api('/api/demo/settings', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ fastMode: true }),
+        });
+        $('fastMode').checked = true;
+        demoMsg($('demoOut'), 'Seeded ' + Object.keys(demoSubs).length + ' demo subscriptions. Fast mode ON. Pick a scenario above.');
+        await refresh();
+      } catch (err) { demoMsg($('demoOut'), err.message, true); }
+    });
+
+    $('resetBtn').addEventListener('click', async () => {
+      demoMsg($('demoOut'), 'resetting…');
+      try {
+        await api('/api/demo/reset', { method: 'POST' });
+        demoMsg($('demoOut'), 'Cleared all events (subscriptions kept).');
+        await refresh();
+      } catch (err) { demoMsg($('demoOut'), err.message, true); }
+    });
+
+    $('reconcileBtn').addEventListener('click', async () => {
+      demoMsg($('demoOut'), 'running reconciler…');
+      try {
+        const r = await api('/api/demo/reconcile', { method: 'POST' });
+        demoMsg($('demoOut'), `Reconciler swept ${r.scanned} non-terminal event(s), re-enqueued ${r.reEnqueued}.`);
+        await refresh();
+      } catch (err) { demoMsg($('demoOut'), err.message, true); }
+    });
+
+    // ---- Manual write actions (retained) ----
     $('subForm').addEventListener('submit', async (ev) => {
       ev.preventDefault();
-      const out = $('subOut'); out.hidden = false; out.textContent = 'creatingâ€¦';
+      const out = $('subOut'); out.hidden = false; out.textContent = 'creating…';
       try {
         const sub = await api('/api/subscriptions', {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -420,7 +662,7 @@
 
     $('eventForm').addEventListener('submit', async (ev) => {
       ev.preventDefault();
-      const out = $('eventOut'); out.hidden = false; out.textContent = 'sendingâ€¦';
+      const out = $('eventOut'); out.hidden = false; out.textContent = 'sending…';
       const subId = $('eventSub').value;
       if (!subId) { out.innerHTML = '<span class="err">Register a subscription first.</span>'; return; }
       try {
@@ -449,6 +691,7 @@
     }
     window.replay = replay;
 
+    initDemo();
     refresh();
     setInterval(refresh, 10000);
   </script>

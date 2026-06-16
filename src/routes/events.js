@@ -9,10 +9,12 @@ const { enqueueDelivery } = require('../queue');
 const { signatureHeader, HEADER_SIGNATURE } = require('../signing');
 
 const router = express.Router();
+
 const uuidSchema = z.string().uuid();
 
 // Render an event row for API responses. raw_body (bytea) is surfaced as a
-// UTF-8 `payload` string for convenience.
+// UTF-8 `payload` string for convenience; the signed/delivered artifact is
+// always the stored bytes, not this rendering.
 function serializeEvent(row) {
   return {
     id: row.id,
@@ -26,22 +28,34 @@ function serializeEvent(row) {
 }
 
 // POST /api/events — ingest an event (the outbox pattern).
-// Routing/idempotency metadata travel in headers so the body can be the exact
-// payload bytes (express.raw is mounted for this router in app.js):
+//
+// Routing/idempotency metadata travel in headers so the request BODY can be
+// the exact payload bytes to deliver, captured verbatim (express.raw is
+// mounted for this router in app.js):
 //   X-Subscription-Id : required, the target subscription
 //   Idempotency-Key   : optional, caller-supplied dedup key (UUID fallback)
+//
+// Flow: validate -> persist as `pending` -> COMMIT -> enqueue -> 202. The
+// Postgres commit is the durable point of no return; a failed enqueue is
+// logged but never rolls the event back (the reconciler re-enqueues it later,
+// and jobId=event.id makes a duplicate enqueue a no-op).
 router.post('/', async (req, res, next) => {
   try {
     const subscriptionId = req.get('x-subscription-id');
     if (!uuidSchema.safeParse(subscriptionId).success) {
-      throw new ApiError(400, 'X-Subscription-Id header is required and must be a UUID');
+      throw new ApiError(
+        400,
+        'X-Subscription-Id header is required and must be a UUID'
+      );
     }
 
     if (!Buffer.isBuffer(req.body) || req.body.length === 0) {
       throw new ApiError(400, 'Request body (the event payload) must not be empty');
     }
 
-    const sub = await db.query('SELECT id FROM subscription WHERE id = $1', [subscriptionId]);
+    const sub = await db.query('SELECT id FROM subscription WHERE id = $1', [
+      subscriptionId,
+    ]);
     if (sub.rowCount === 0) {
       throw new ApiError(404, 'Subscription not found');
     }
@@ -60,7 +74,11 @@ router.post('/', async (req, res, next) => {
     );
 
     if (inserted.rowCount === 0) {
-      const existing = await db.query('SELECT * FROM event WHERE idempotency_key = $1', [idempotencyKey]);
+      // Idempotency-key conflict: return the original event, enqueue nothing.
+      const existing = await db.query(
+        'SELECT * FROM event WHERE idempotency_key = $1',
+        [idempotencyKey]
+      );
       return res.status(200).json(serializeEvent(existing.rows[0]));
     }
 
@@ -79,9 +97,13 @@ router.post('/', async (req, res, next) => {
   }
 });
 
-// GET /api/events — recent events with attempt timelines, newest first. For
-// events currently `dead`, the id of the most recent unreplayed dead_letter row
-// is attached as `dead_letter_id` so the dashboard can offer one-click replay.
+// GET /api/events — recent events with their attempt timelines, newest first.
+// Powers the dashboard's event view. For events that are currently `dead`, the
+// id of the most recent (unreplayed) dead_letter row is attached as
+// `dead_letter_id` so the dashboard can offer a one-click replay.
+//
+// Attempts and dead-letter rows are fetched in two set-based queries (keyed by
+// the page of event ids) rather than per-event, to keep this off the N+1 path.
 router.get('/', async (req, res, next) => {
   try {
     const limit = Math.min(Math.max(Number(req.query.limit) || 20, 1), 100);
@@ -90,6 +112,7 @@ router.get('/', async (req, res, next) => {
       `SELECT * FROM event ORDER BY created_at DESC LIMIT $1`,
       [limit]
     );
+
     if (eventRows.length === 0) {
       return res.status(200).json([]);
     }
@@ -109,20 +132,26 @@ router.get('/', async (req, res, next) => {
       attemptsByEvent.get(a.event_id).push(a);
     }
 
+    // Most recent, not-yet-replayed dead_letter per event (with its reason, so
+    // the dashboard can show WHY an event died).
     const { rows: dlRows } = await db.query(
-      `SELECT DISTINCT ON (event_id) id, event_id
+      `SELECT DISTINCT ON (event_id) id, event_id, reason
        FROM dead_letter
        WHERE event_id = ANY($1) AND replayed_at IS NULL
        ORDER BY event_id, created_at DESC`,
       [ids]
     );
-    const deadLetterByEvent = new Map(dlRows.map((d) => [d.event_id, d.id]));
+    const deadLetterByEvent = new Map(dlRows.map((d) => [d.event_id, d]));
 
-    const events = eventRows.map((row) => ({
-      ...serializeEvent(row),
-      attempts: attemptsByEvent.get(row.id) || [],
-      dead_letter_id: deadLetterByEvent.get(row.id) || null,
-    }));
+    const events = eventRows.map((row) => {
+      const dl = deadLetterByEvent.get(row.id) || null;
+      return {
+        ...serializeEvent(row),
+        attempts: attemptsByEvent.get(row.id) || [],
+        dead_letter_id: dl ? dl.id : null,
+        dead_letter_reason: dl ? dl.reason : null,
+      };
+    });
 
     res.status(200).json(events);
   } catch (err) {
@@ -132,21 +161,29 @@ router.get('/', async (req, res, next) => {
 
 // GET /api/events/:id/signature — the signing headers a receiver should expect
 // for this event, computed from the subscription's stored secret over the exact
-// raw_body bytes. The timestamp (and thus the signature) is freshly computed per
-// call — a verification sample, not a record of a past delivery.
+// raw_body bytes. Used by the dashboard to show the test event's signature.
+//
+// The timestamp (and therefore the signature) is freshly computed per call —
+// it is a verification sample, not a record of what a past delivery sent (we do
+// not persist signatures). When the subscription has no secret, `signed:false`.
 router.get('/:id/signature', async (req, res, next) => {
   try {
     if (!uuidSchema.safeParse(req.params.id).success) {
       throw new ApiError(400, 'id must be a UUID');
     }
 
-    const { rows } = await db.query('SELECT * FROM event WHERE id = $1', [req.params.id]);
+    const { rows } = await db.query('SELECT * FROM event WHERE id = $1', [
+      req.params.id,
+    ]);
     if (rows.length === 0) {
       throw new ApiError(404, 'Event not found');
     }
     const event = rows[0];
 
-    const { rows: subRows } = await db.query('SELECT secret FROM subscription WHERE id = $1', [event.subscription_id]);
+    const { rows: subRows } = await db.query(
+      'SELECT secret FROM subscription WHERE id = $1',
+      [event.subscription_id]
+    );
     const secret = subRows[0] ? subRows[0].secret : null;
 
     if (!secret) {
@@ -173,7 +210,9 @@ router.get('/:id', async (req, res, next) => {
       throw new ApiError(400, 'id must be a UUID');
     }
 
-    const { rows } = await db.query('SELECT * FROM event WHERE id = $1', [req.params.id]);
+    const { rows } = await db.query('SELECT * FROM event WHERE id = $1', [
+      req.params.id,
+    ]);
     if (rows.length === 0) {
       throw new ApiError(404, 'Event not found');
     }

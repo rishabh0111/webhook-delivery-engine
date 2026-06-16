@@ -76,6 +76,42 @@ fall back to the platform's environment.
 - **Dashboard:** http://localhost:3000/dashboard
 - **API docs (Swagger UI):** http://localhost:3000/docs
 
+## Live demo walkthrough
+
+The dashboard ships with a self-contained, zero-setup walkthrough so the **entire** delivery
+lifecycle — every outcome path — can be demonstrated without registering external receivers
+or waiting on production backoff. It is a **demo aid** gated behind `DEMO_MODE` (on by default
+outside production; set `DEMO_MODE=true` to enable it on the live deploy).
+
+How it works:
+
+- An **in-process demo receiver** (`/demo/receiver/*`) is the destination the engine delivers
+  to. It returns controllable outcomes (200 / 401 / 503 / never-responds / flaky-then-200) and
+  **verifies the HMAC** of each delivery, reporting whether the signature was valid.
+- **Seed demo data** creates one subscription per outcome (signed + unsigned variants), and
+  **Fast mode** compresses the retry backoff (~2s base) and delivery timeout at runtime — no
+  env change, no redeploy — so a "retries exhausted → dead-letter" lands in ~30s instead of
+  ~15 min. Production defaults (60s → 480s) are untouched when fast mode is off.
+- **One-click scenarios** each drive a full path end-to-end:
+
+  | Scenario | What it proves |
+  | --- | --- |
+  | Happy path (signed / unsigned) | `2xx` → delivered; signature verified by the receiver |
+  | Retry → success | `503` twice then `200` → retries converge instead of giving up |
+  | Timeout → retry | receiver never answers → per-attempt abort, then retry |
+  | Permanent failure | `401` → dead-lettered immediately (no wasted retries) |
+  | Exhaust retries | `503` forever → dead-lettered after 5 attempts |
+  | Idempotency conflict | same `Idempotency-Key` twice → `202` then `200`, one event |
+  | Replay | recover the newest dead-lettered event (a second replay → `409`) |
+
+- **Run reconciler now** triggers the outbox backstop on demand (instead of its ~15-min
+  sweep), and **Reset events** clears the slate between runs.
+
+The existing **Register subscription** / **Create test event** forms remain for ad-hoc entry —
+point a subscription at any real external URL to show a genuine cross-network delivery.
+
+Seed from the CLI instead of the dashboard with `npm run seed` (honors `PUBLIC_BASE_URL`).
+
 ### Run the tests
 
 ```bash
@@ -162,4 +198,40 @@ function verify(secret, rawBody, headers, toleranceSeconds = 300) {
 ```
 
 The dashboard surfaces the signature for a test event, and `GET /api/events/:id/signature`
-returns it programmatically, so you can validate your implementation end-to-end.c
+returns it programmatically, so you can validate your implementation end-to-end.
+
+## Production Gaps
+
+This is a portfolio project that deliberately trades breadth for a handful of
+carefully-solved hard problems. The following were **consciously left out**; each is a
+known, scoped piece of work rather than an oversight.
+
+- **Authentication / authorization.** The API is unauthenticated. Production would need API
+  keys or OAuth on every route, plus per-tenant isolation. Omitted to keep the focus on
+  delivery semantics.
+- **Topic fan-out routing (one event → many subscriptions).** Each event targets exactly one
+  subscription, which keeps `event.status` singular. Fan-out would require splitting the
+  `event` row from a per-target `delivery` entity (each with its own status/attempts). That
+  is the right model for fan-out but a larger schema change.
+- **Per-subscription FIFO ordering.** Delivery order is not guaranteed (matches major
+  providers). Worker `concurrency: 5` means a slow receiver can't block the queue, but two
+  events for the same subscription may arrive out of order. Ordered delivery needs
+  per-subscription serialization (e.g. BullMQ groups / a key-based lock).
+- **Secret encryption at rest.** Subscription secrets are stored in plaintext because they
+  must be readable to sign each delivery (they are not passwords and cannot be hashed).
+  Production would wrap them with envelope encryption (KMS) or `pgcrypto`.
+- **SSRF hardening.** Target URLs are not validated against private/link-local ranges, so a
+  caller could point a subscription at internal infrastructure. Production needs an allowlist
+  / DNS-resolution guard before each delivery.
+- **Honoring `Retry-After` on 429.** A `429` is treated as transient and retried with normal
+  exponential backoff; the `Retry-After` header is ignored. Production should respect it to
+  cooperate with rate-limited receivers.
+- **Splitting web and worker into separate services.** The API and the BullMQ worker share
+  one process because the target free host offers no separate background worker. The worker
+  is already isolated as its own module, so this is a deployment/topology change rather than
+  a rewrite.
+- **The in-process demo receiver is a portfolio aid, not part of the engine.** `/demo/*` (the
+  controllable receiver, seed/reset/reconcile controls, and the runtime timing toggle) exist
+  only to make the system demonstrable end-to-end on a single free instance. They are gated
+  behind `DEMO_MODE` and would be disabled (or omitted) in a real deployment; the runtime
+  timing toggle is process-local and resets on restart.

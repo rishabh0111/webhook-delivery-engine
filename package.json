@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node --env-file-if-exists=.env src/index.js",
     "migrate": "node --env-file-if-exists=.env src/migrate.js",
+    "seed": "node --env-file-if-exists=.env src/seed.js",
     "test": "jest --runInBand"
   },
   "engines": {
