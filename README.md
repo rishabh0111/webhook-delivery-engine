@@ -55,7 +55,10 @@ flowchart TD
 
 Postgres is authoritative for business state; Redis/BullMQ is a disposable
 scheduler. Losing Redis entirely loses no events — the reconciler rebuilds the
-work queue from Postgres. The API and worker run in one Node process; the worker
+work queue from Postgres, and a watchdog re-registers the reconciler's own
+schedule within a minute when Redis comes back empty, so no restart is needed
+([measured](docs/results/2026-09-26-benchmarks.md): 0 of 50,000 lost through
+a mid-load `FLUSHALL`). The API and worker run in one Node process; the worker
 is an isolated module and splitting it out is a deployment change.
 
 ## Quick start

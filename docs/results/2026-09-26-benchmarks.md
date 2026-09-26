@@ -1,7 +1,8 @@
 # Benchmarks — 26 Sep 2026
 
 Three benchmarks from [bench/](../../bench/), run against the engine at commit
-`3feeb20` with no changes to `src/`. Every run is listed below, including the
+`3feeb20` with no changes to `src/`, except D3, which ran after the fix for
+the bug D2 found (see "Bug: FLUSHALL deletes the reconciler's own schedule"). Every run is listed below, including the
 smoke tests and the failed ones. Each run's `summary.json` (plus backlog / DB
 samples and console output) is in [2026-09-26/](2026-09-26/), one directory
 per run; the raw NDJSON (every ingest request, every receiver hit) and engine
@@ -11,7 +12,8 @@ logs stayed in `bench/out/` and are not committed (about 400 MB).
 
 | Benchmark | Result |
 | --- | --- |
-| Durability, FLUSHALL mid-load, **no restart** | **23,536 of 50,000** accepted events never delivered. The reconciler never ran again after the flush (bug, below). |
+| Durability, FLUSHALL mid-load, **no restart, after the fix** (D3) | **0 of 50,000** lost, 0 double-sends, no restart. All 50,000 delivered 191.091 s after ingest ended; the watchdog noticed the lost schedule 24 s after the flush and swept at once. |
+| Durability, FLUSHALL mid-load, **no restart, before the fix** (D2) | **23,536 of 50,000** accepted events never delivered. The reconciler never ran again after the flush (bug, below). |
 | Durability, FLUSHALL mid-load, **engine restarted after the flush** | **0 of 50,000** lost, 0 double-sends. All 50,000 delivered 722.492 s after ingest ended; one reconciler sweep re-enqueued 23,419 events. |
 | Throughput, 5,000 events/min for 15 min (clean runs 2 and 3) | 75,000 / 75,000 delivered in each run. End-to-end p50 / p95 / p99 / max: **25 / 47 / 139 / 418 ms** (run 2) and **23 / 33 / 38 / 170 ms** (run 3). Backlog stayed flat (max sampled 9 and 4). |
 | Idempotency, 10,000 events × 2 | Ingest key: 20,000 requests → 10,000 events → 10,000 deliveries, 0 double-sends. Same event id enqueued twice: 20,000 enqueues → 10,000 jobs (BullMQ reported 10,000 duplicates) → 10,000 deliveries, 0 double-sends. |
@@ -70,6 +72,7 @@ export REDIS_URL=redis://localhost:6379
 | I1 | `08-00-39-025Z-idempotency-10000` | `node bench/idempotency.js --events 10000` | Clean. |
 | D1 | `08-03-05-938Z-durability-50000-restart` | `BENCH_FLUSH_CMD="docker exec wde-bench-redis-1 redis-cli FLUSHALL" node bench/durability.js --events 50000 --wait-min 40 --restart-after-flush` | 0 lost, needed a restart. |
 | D2 | `08-16-58-321Z-durability-50000` | `RECONCILE_INTERVAL_MS=60000 BENCH_FLUSH_CMD="docker exec wde-bench-redis-1 redis-cli FLUSHALL" node bench/durability.js --events 50000 --wait-min 10` | 23,536 lost (never delivered within the wait). |
+| D3 | `08-35-33-649Z-durability-50000` | `node bench/durability.js --events 50000 --wait-min 20` (after the fix; all defaults) | 0 lost, 0 double-sends, no restart. |
 
 T1 and T2 ran before `throughput.js` gained its per-minute breakdown and its
 rule that only the run's own events count toward "delivered during load".
@@ -137,9 +140,33 @@ process restarts. Nothing is lost from Postgres (every stranded event is
 still `pending` there, and a restart recovers all of them, as D1 and T1 show),
 but without a restart, delivery stops for those events.
 
-Not fixed here, per the brief. One possible fix: have the reconciler
-re-register itself (or run on an in-process timer) instead of relying on
-Redis-held state.
+**Fixed after these runs.** The process now runs a watchdog every
+`RECONCILE_WATCHDOG_MS` (default 60 s) that asks Redis whether the
+reconciler's schedule still exists (`getJobSchedulersCount`). If it doesn't,
+Redis has lost data, so the watchdog re-registers the schedule and sweeps at
+once, treating `pending` events of any age as stranded. `delivering` keeps its
+5-minute age guard because a worker may still be holding it. The check
+touches Redis only, so it doesn't wake a suspended Postgres. A test in
+`tests/reconciler.test.js` covers the re-registration.
+
+### D3: no restart, after the fix (all defaults)
+
+| | |
+| --- | --- |
+| Accepted (`202`) | 50,000 of 50,000 in 69.674 s |
+| Queue at the flush (08:36:10) | 23,468 waiting, 5 active (23,573 Redis keys) |
+| Watchdog | 08:36:34: "reconciler schedule was missing (Redis data loss?); re-registered it, sweeping now" |
+| Sweep, logged on completion at 08:38:50 | `scanned: 40534, reEnqueued: 40534` |
+| All terminal | 191.091 s after ingest ended: 50,000 delivered, 0 dead |
+| Receiver | 50,000 unique, **0 missing, 0 duplicates**, 0 unexpected |
+
+The watchdog fired while ingest was still running, so the sweep's snapshot
+held 40,534 `pending` events: the 23,542 stranded by the flush plus events
+ingested after it. The sweep then took 136 s. By the time it reached some of
+those later events, their own jobs had completed and been removed, so it added
+new ones. The worker's status guard (`src/worker.js`) skipped each of those,
+which is why the receiver saw every event exactly once. `reEnqueued` counts
+enqueue calls, not extra deliveries.
 
 ## 2. Throughput and latency — 5,000 events/min for 15 min
 
