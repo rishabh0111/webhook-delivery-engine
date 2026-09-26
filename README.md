@@ -89,6 +89,29 @@ NODE_ENV=test \
 npm test
 ```
 
+### Benchmarks
+
+[bench/](bench/) holds three load benchmarks. Each script starts the engine
+(`node src/index.js`) and a local receiver as child processes, drives the real
+HTTP API, and counts losses and double-sends at the receiver. Raw output lands
+in `bench/out/<timestamp>-<name>/` (git-ignored); measured results are in
+[docs/results/](docs/results/).
+
+```bash
+docker compose up -d
+export DATABASE_URL=postgres://postgres:postgres@localhost:5432/webhooks
+export REDIS_URL=redis://localhost:6379
+npm run migrate
+
+node bench/throughput.js --rate 5000 --minutes 15   # fixed-rate load, end-to-end latency
+node bench/idempotency.js --events 10000            # duplicate keys + duplicate enqueues
+node bench/durability.js --events 50000 --wait-min 20 [--restart-after-flush]
+```
+
+`durability.js` sends `FLUSHALL` to Redis mid-run — point it only at a
+disposable Redis. Events are scoped to a fresh subscription per run, so
+Postgres needs no reset between runs.
+
 ## API surface
 
 | Method & path | Purpose |
