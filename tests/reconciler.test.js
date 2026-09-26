@@ -1,8 +1,13 @@
 'use strict';
 
 const crypto = require('crypto');
-const { reconcile } = require('../src/reconciler');
-const { queue, enqueueDelivery } = require('../src/queue');
+const { Queue } = require('bullmq');
+const {
+  MAINTENANCE_QUEUE,
+  reconcile,
+  ensureReconcilerScheduled,
+} = require('../src/reconciler');
+const { queue, connection, enqueueDelivery } = require('../src/queue');
 const { pool, setupDb, resetDb, teardownDb } = require('./helpers/db');
 const { resetQueue, closeQueue } = require('./helpers/queue');
 
@@ -82,5 +87,32 @@ describe('reconcile (outbox backstop)', () => {
 
     expect(result.reEnqueued).toBe(1);
     expect(await queue.getJob(fresh)).toBeDefined();
+  });
+});
+
+describe('reconciler schedule (survives Redis data loss)', () => {
+  let maintenance;
+
+  beforeAll(() => {
+    maintenance = new Queue(MAINTENANCE_QUEUE, { connection });
+  });
+
+  beforeEach(async () => {
+    await maintenance.obliterate({ force: true });
+  });
+
+  afterAll(async () => {
+    await maintenance.obliterate({ force: true });
+    await maintenance.close();
+  });
+
+  it('re-registers a schedule that Redis lost, and leaves a live one alone', async () => {
+    // Empty, as after FLUSHALL: the watchdog must put the schedule back.
+    expect(await ensureReconcilerScheduled(maintenance)).toBe(true);
+    expect(await maintenance.getJobSchedulersCount()).toBe(1);
+
+    // Already present: a no-op, and no second schedule.
+    expect(await ensureReconcilerScheduled(maintenance)).toBe(false);
+    expect(await maintenance.getJobSchedulersCount()).toBe(1);
   });
 });

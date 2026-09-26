@@ -32,6 +32,10 @@ const config = {
   reconcilePendingAgeMs: Number(process.env.RECONCILE_PENDING_AGE_MS) || 60 * 1000,
   reconcileDeliveringAgeMs:
     Number(process.env.RECONCILE_DELIVERING_AGE_MS) || 5 * 60 * 1000,
+  // The reconciler's schedule lives in Redis, so losing Redis loses it too.
+  // This often the process checks it is still there; the check touches Redis
+  // only, never Postgres, so it doesn't wake a suspended database.
+  reconcileWatchdogMs: Number(process.env.RECONCILE_WATCHDOG_MS) || 60 * 1000,
   // /metrics is cached this long so a left-open dashboard tab (polling ~every
   // 10s) does not hammer Postgres/Redis on every refresh — protecting the
   // free-tier compute budget. Read at call time so tests can disable it.

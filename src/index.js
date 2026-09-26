@@ -7,7 +7,11 @@ const { pool } = require('./db');
 const { runMigrations } = require('./migrate');
 const { queue, connection } = require('./queue');
 const { createWorker } = require('./worker');
-const { createReconciler, scheduleReconciler } = require('./reconciler');
+const {
+  createReconciler,
+  scheduleReconciler,
+  startReconcilerWatchdog,
+} = require('./reconciler');
 
 async function start() {
   await runMigrations(pool);
@@ -17,6 +21,8 @@ async function start() {
   // Outbox backstop: a repeatable job sweeps for orphaned non-terminal events.
   const reconciler = createReconciler();
   await scheduleReconciler(reconciler.queue);
+  // ...and a watchdog, because that schedule is lost with the rest of Redis.
+  const watchdog = startReconcilerWatchdog(reconciler.queue);
 
   const server = app.listen(config.port, () => {
     logger.info({ port: config.port }, 'server listening');
@@ -24,6 +30,7 @@ async function start() {
 
   const shutdown = async (signal) => {
     logger.info({ signal }, 'shutting down');
+    clearInterval(watchdog);
     server.close(async () => {
       try {
         await worker.close();

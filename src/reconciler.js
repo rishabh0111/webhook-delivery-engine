@@ -97,10 +97,44 @@ async function scheduleReconciler(queue) {
   );
 }
 
+// The schedule is itself Redis state: a FLUSHALL (or a Redis that comes back
+// empty) deletes it, and the backstop meant to recover from Redis loss would
+// never run again until the process restarts. Re-register it when it's
+// missing, and report that it was, so the caller can sweep straight away.
+async function ensureReconcilerScheduled(queue) {
+  if ((await queue.getJobSchedulersCount()) > 0) {
+    return false;
+  }
+  await scheduleReconciler(queue);
+  return true;
+}
+
+// Every `reconcileWatchdogMs`, check the schedule survived. If it didn't,
+// Redis lost data, so the jobs for pending events went with it: sweep now
+// rather than wait out a full interval. Pending events of any age are safe to
+// re-enqueue (jobId = event.id dedups against an enqueue still in flight);
+// `delivering` keeps its age guard because a worker may still hold it.
+function startReconcilerWatchdog(queue) {
+  const timer = setInterval(async () => {
+    try {
+      if (await ensureReconcilerScheduled(queue)) {
+        logger.warn('reconciler schedule was missing (Redis data loss?); re-registered it, sweeping now');
+        await reconcile({ pendingAgeMs: 0 });
+      }
+    } catch (err) {
+      logger.error({ err }, 'reconciler watchdog failed');
+    }
+  }, config.reconcileWatchdogMs);
+  timer.unref();
+  return timer;
+}
+
 module.exports = {
   MAINTENANCE_QUEUE,
   RECONCILE_JOB,
   reconcile,
   createReconciler,
   scheduleReconciler,
+  ensureReconcilerScheduled,
+  startReconcilerWatchdog,
 };
