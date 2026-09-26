@@ -1,0 +1,197 @@
+2026-09-26T08:03:05.940Z run dir bench/out/2026-09-26T08-03-05-938Z-durability-50000-restart
+2026-09-26T08:03:06.505Z engine up (pid 1840)
+OK
+2026-09-26T08:03:49.884Z FLUSHALL sent after 25000 accepted; queue before: {"waiting":23468,"active":5,"delayed":0,"completed":0,"failed":0,"paused":0}
+2026-09-26T08:03:49.926Z engine killed (pid 1840)
+2026-09-26T08:03:50.984Z engine up (pid 25632)
+2026-09-26T08:04:34.329Z ingest done: 50000 accepted of 50000 in 87.737s { '202': 50000 }
+2026-09-26T08:04:34.333Z waiting up to 40 min for all events to be terminal
+2026-09-26T08:04:34.411Z   db: total=50000 delivered=3148 dead=0 pending=46849 delivering=3
+2026-09-26T08:04:44.482Z   db: total=50000 delivered=5428 dead=0 pending=44570 delivering=2
+2026-09-26T08:04:54.579Z   db: total=50000 delivered=7832 dead=0 pending=42164 delivering=4
+2026-09-26T08:05:04.651Z   db: total=50000 delivered=10253 dead=0 pending=39744 delivering=3
+2026-09-26T08:05:14.724Z   db: total=50000 delivered=12678 dead=0 pending=37318 delivering=4
+2026-09-26T08:05:24.787Z   db: total=50000 delivered=15167 dead=0 pending=34830 delivering=3
+2026-09-26T08:05:34.851Z   db: total=50000 delivered=17657 dead=0 pending=32341 delivering=2
+2026-09-26T08:05:44.954Z   db: total=50000 delivered=20192 dead=0 pending=29805 delivering=3
+2026-09-26T08:05:55.022Z   db: total=50000 delivered=22702 dead=0 pending=27295 delivering=3
+2026-09-26T08:06:05.107Z   db: total=50000 delivered=25201 dead=0 pending=24796 delivering=3
+2026-09-26T08:06:15.148Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:06:25.198Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:06:35.249Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:06:45.308Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:06:55.350Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:07:05.404Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:07:15.456Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:07:25.500Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:07:35.562Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:07:45.602Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:07:55.655Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:08:05.700Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:08:15.739Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:08:25.785Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:08:35.832Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:08:45.881Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:08:55.936Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:09:05.983Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:09:16.037Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:09:26.088Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:09:36.138Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:09:46.200Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:09:56.242Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:10:06.296Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:10:16.349Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:04:22.963Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:04:33.014Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:04:43.066Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:04:53.117Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:05:03.165Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:05:13.213Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:05:23.263Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:05:33.318Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:05:43.366Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:05:53.422Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:06:03.467Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:06:13.516Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:06:23.572Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:06:33.623Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:06:43.669Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:06:53.715Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:07:03.765Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:07:13.814Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:07:23.863Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:07:33.911Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:07:43.965Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:07:54.015Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:08:04.063Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:08:14.115Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:08:24.174Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:08:34.219Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:08:44.265Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:08:54.311Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:09:04.368Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:09:14.419Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:09:24.459Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:09:34.508Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:09:44.567Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:09:54.618Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:10:04.662Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:10:14.711Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:10:24.760Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:10:34.811Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:10:44.860Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:10:54.912Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:11:04.959Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:11:15.005Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:11:25.060Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:11:35.112Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:11:45.160Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:11:55.203Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:12:05.249Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:12:15.300Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:12:25.343Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:12:35.402Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:12:45.447Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:12:55.491Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:13:05.531Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:13:15.594Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:13:25.644Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:13:35.691Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:13:45.746Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:13:55.784Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:14:05.837Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:14:15.887Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:14:25.946Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:14:35.991Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:14:46.043Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:14:56.098Z   db: total=50000 delivered=26581 dead=0 pending=23419 delivering=0
+2026-09-26T08:15:06.150Z   db: total=50000 delivered=28246 dead=0 pending=21750 delivering=4
+2026-09-26T08:15:16.238Z   db: total=50000 delivered=30649 dead=0 pending=19347 delivering=4
+2026-09-26T08:15:26.308Z   db: total=50000 delivered=32907 dead=0 pending=17089 delivering=4
+2026-09-26T08:15:36.399Z   db: total=50000 delivered=35196 dead=0 pending=14799 delivering=5
+2026-09-26T08:15:46.476Z   db: total=50000 delivered=37563 dead=0 pending=12433 delivering=4
+2026-09-26T08:15:56.544Z   db: total=50000 delivered=40025 dead=0 pending=9971 delivering=4
+2026-09-26T08:16:06.614Z   db: total=50000 delivered=42488 dead=0 pending=7510 delivering=2
+2026-09-26T08:16:16.707Z   db: total=50000 delivered=44692 dead=0 pending=5305 delivering=3
+2026-09-26T08:16:26.765Z   db: total=50000 delivered=47397 dead=0 pending=2599 delivering=4
+2026-09-26T08:16:36.820Z   db: total=50000 delivered=50000 dead=0 pending=0 delivering=0
+{
+  "benchmark": "durability",
+  "machine": {
+    "cpu": "12th Gen Intel(R) Core(TM) i5-1245U",
+    "cores": 12,
+    "memGb": 17,
+    "platform": "Windows_NT 10.0.26200",
+    "node": "v24.19.0"
+  },
+  "env": {
+    "RECONCILE_INTERVAL_MS": "(default 900000)",
+    "RECONCILE_PENDING_AGE_MS": "(default 60000)",
+    "RECONCILE_DELIVERING_AGE_MS": "(default 300000)",
+    "LOG_LEVEL": "(default info)"
+  },
+  "params": {
+    "N": 50000,
+    "concurrency": 32,
+    "flushAt": 25000,
+    "waitMin": 40,
+    "restartAfterFlush": true
+  },
+  "subscriptionId": "37099203-6464-4f66-80d1-d0b13bd70630",
+  "ingest": {
+    "statusTally": {
+      "202": 50000
+    },
+    "accepted": 50000,
+    "seconds": 87.737,
+    "acceptedPerMin": 34193
+  },
+  "flush": {
+    "at": 1790409829484,
+    "method": "docker exec wde-bench-redis-1 redis-cli FLUSHALL",
+    "before": {
+      "accepted": 25000,
+      "queue": {
+        "waiting": 23468,
+        "active": 5,
+        "delayed": 0,
+        "completed": 0,
+        "failed": 0,
+        "paused": 0
+      },
+      "db": {
+        "pending": 23487,
+        "delivering": 3,
+        "delivered": 1541,
+        "failed": 0,
+        "dead": 0,
+        "total": 25031,
+        "nonTerminal": 23490
+      },
+      "redisKeys": 23505
+    },
+    "restartedAt": 1790409830984
+  },
+  "allTerminal": true,
+  "secondsFromIngestEndToTerminal": 722.492,
+  "finalDb": {
+    "pending": 0,
+    "delivering": 0,
+    "delivered": 50000,
+    "failed": 0,
+    "dead": 0,
+    "total": 50000,
+    "nonTerminal": 0
+  },
+  "receiver": {
+    "accepted": 50000,
+    "receipts": 50000,
+    "uniqueReceived": 50000,
+    "missing": 0,
+    "missingIdsSample": [],
+    "idsWithDuplicates": 0,
+    "duplicateSends": 0,
+    "unexpectedIds": 0
+  }
+}
+2026-09-26T08:16:41.948Z engine killed (pid 25632)

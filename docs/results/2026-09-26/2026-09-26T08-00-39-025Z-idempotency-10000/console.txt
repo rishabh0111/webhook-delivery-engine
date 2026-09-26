@@ -1,0 +1,109 @@
+2026-09-26T08:00:39.027Z run dir bench/out/2026-09-26T08-00-39-025Z-idempotency-10000
+2026-09-26T08:00:39.596Z engine up (pid 17752)
+2026-09-26T08:01:13.350Z A: ingest done {"concurrentPairs":5000,"sequentialPairs":5000,"status":{"200":10000,"202":10000},"pairsWithDifferentIds":0,"pairsNotOne202":0}
+2026-09-26T08:01:13.461Z   db: total=10000 delivered=1079 dead=0 pending=8916 delivering=5
+2026-09-26T08:01:18.502Z   db: total=10000 delivered=2300 dead=0 pending=7696 delivering=4
+2026-09-26T08:01:23.532Z   db: total=10000 delivered=3503 dead=0 pending=6495 delivering=2
+2026-09-26T08:01:28.569Z   db: total=10000 delivered=4724 dead=0 pending=5272 delivering=4
+2026-09-26T08:01:33.616Z   db: total=10000 delivered=6006 dead=0 pending=3992 delivering=2
+2026-09-26T08:01:38.649Z   db: total=10000 delivered=7251 dead=0 pending=2746 delivering=3
+2026-09-26T08:01:43.671Z   db: total=10000 delivered=8431 dead=0 pending=1566 delivering=3
+2026-09-26T08:01:48.707Z   db: total=10000 delivered=9626 dead=0 pending=369 delivering=5
+2026-09-26T08:01:53.733Z   db: total=10000 delivered=10000 dead=0 pending=0 delivering=0
+2026-09-26T08:01:57.517Z B: 20000 enqueue calls for 10000 events
+2026-09-26T08:01:57.551Z   db: total=10000 delivered=628 dead=0 pending=9371 delivering=1
+2026-09-26T08:02:02.581Z   db: total=10000 delivered=1734 dead=0 pending=8264 delivering=2
+2026-09-26T08:02:07.616Z   db: total=10000 delivered=2874 dead=0 pending=7122 delivering=4
+2026-09-26T08:02:12.651Z   db: total=10000 delivered=4065 dead=0 pending=5934 delivering=1
+2026-09-26T08:02:17.701Z   db: total=10000 delivered=5224 dead=0 pending=4773 delivering=3
+2026-09-26T08:02:22.731Z   db: total=10000 delivered=6428 dead=0 pending=3570 delivering=2
+2026-09-26T08:02:27.772Z   db: total=10000 delivered=7620 dead=0 pending=2377 delivering=3
+2026-09-26T08:02:32.805Z   db: total=10000 delivered=8797 dead=0 pending=1199 delivering=4
+2026-09-26T08:02:37.843Z   db: total=10000 delivered=9989 dead=0 pending=9 delivering=2
+2026-09-26T08:02:42.870Z   db: total=10000 delivered=10000 dead=0 pending=0 delivering=0
+{
+  "benchmark": "idempotency",
+  "machine": {
+    "cpu": "12th Gen Intel(R) Core(TM) i5-1245U",
+    "cores": 12,
+    "memGb": 17,
+    "platform": "Windows_NT 10.0.26200",
+    "node": "v24.19.0"
+  },
+  "env": {
+    "LOG_LEVEL": "(default info)"
+  },
+  "params": {
+    "M": 10000,
+    "concurrency": 32
+  },
+  "A_ingestIdempotencyKey": {
+    "subscriptionId": "45373e93-cf03-4016-96fc-fd8317deb0da",
+    "requests": 20000,
+    "concurrentPairs": 5000,
+    "sequentialPairs": 5000,
+    "status": {
+      "200": 10000,
+      "202": 10000
+    },
+    "pairsWithDifferentIds": 0,
+    "pairsNotOne202": 0,
+    "dbEvents": 10000,
+    "dbDistinctKeys": 10000,
+    "allTerminal": true,
+    "finalDb": {
+      "pending": 0,
+      "delivering": 0,
+      "delivered": 10000,
+      "failed": 0,
+      "dead": 0,
+      "total": 10000,
+      "nonTerminal": 0
+    },
+    "receiver": {
+      "accepted": 10000,
+      "receipts": 10000,
+      "uniqueReceived": 10000,
+      "missing": 0,
+      "missingIdsSample": [],
+      "idsWithDuplicates": 0,
+      "duplicateSends": 0,
+      "unexpectedIds": 0
+    }
+  },
+  "B_duplicateEnqueueSameJobId": {
+    "subscriptionId": "c8055e12-8140-432f-a01a-ae8478584cc7",
+    "events": 10000,
+    "enqueueCalls": 20000,
+    "bullmqDuplicatedEvents": 10000,
+    "allTerminal": true,
+    "finalDb": {
+      "pending": 0,
+      "delivering": 0,
+      "delivered": 10000,
+      "failed": 0,
+      "dead": 0,
+      "total": 10000,
+      "nonTerminal": 0
+    },
+    "receiverDeliveriesBeforeC": 10000
+  },
+  "C_lateReenqueueAfterDelivery": {
+    "enqueueCalls": 10000,
+    "bullmqDuplicatedEvents": 0,
+    "deliveryAttemptsBefore": 10000,
+    "deliveryAttemptsAfter": 10000,
+    "receiverDeliveriesAfter": 10000
+  },
+  "receiverB": {
+    "accepted": 10000,
+    "receipts": 10000,
+    "uniqueReceived": 10000,
+    "missing": 0,
+    "missingIdsSample": [],
+    "idsWithDuplicates": 0,
+    "duplicateSends": 0,
+    "unexpectedIds": 0
+  }
+}
+2026-09-26T08:02:57.240Z engine killed (pid 17752)

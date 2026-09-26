@@ -1,0 +1,56 @@
+[
+  {
+    "t": 1790406597853,
+    "sent": 502,
+    "acked": 502,
+    "inFlight": 0,
+    "receiverDeliveries": 499,
+    "dbTotal": 502,
+    "dbDelivered": 501,
+    "dbDead": 0,
+    "backlog": 1,
+    "queue": {
+      "waiting": 0,
+      "active": 1,
+      "delayed": 0,
+      "failed": 0,
+      "paused": 0
+    }
+  },
+  {
+    "t": 1790406607834,
+    "sent": 1001,
+    "acked": 1000,
+    "inFlight": 1,
+    "receiverDeliveries": 1000,
+    "dbTotal": 1000,
+    "dbDelivered": 1000,
+    "dbDead": 0,
+    "backlog": 0,
+    "queue": {
+      "waiting": 0,
+      "active": 1,
+      "delayed": 0,
+      "failed": 0,
+      "paused": 0
+    }
+  },
+  {
+    "t": 1790406617825,
+    "sent": 1500,
+    "acked": 1500,
+    "inFlight": 0,
+    "receiverDeliveries": 1499,
+    "dbTotal": 1500,
+    "dbDelivered": 1499,
+    "dbDead": 0,
+    "backlog": 1,
+    "queue": {
+      "waiting": 0,
+      "active": 1,
+      "delayed": 0,
+      "failed": 0,
+      "paused": 0
+    }
+  }
+]

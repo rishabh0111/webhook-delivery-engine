@@ -1,0 +1,99 @@
+{
+  "benchmark": "durability",
+  "machine": {
+    "cpu": "12th Gen Intel(R) Core(TM) i5-1245U",
+    "cores": 12,
+    "memGb": 17,
+    "platform": "Windows_NT 10.0.26200",
+    "node": "v24.19.0"
+  },
+  "env": {
+    "RECONCILE_INTERVAL_MS": "60000",
+    "RECONCILE_PENDING_AGE_MS": "(default 60000)",
+    "RECONCILE_DELIVERING_AGE_MS": "(default 300000)",
+    "LOG_LEVEL": "(default info)"
+  },
+  "params": {
+    "N": 50000,
+    "concurrency": 32,
+    "flushAt": 25000,
+    "waitMin": 10,
+    "restartAfterFlush": false
+  },
+  "subscriptionId": "68cef8e6-2fa1-4abd-a9ea-55846967c671",
+  "ingest": {
+    "statusTally": {
+      "202": 50000
+    },
+    "accepted": 50000,
+    "seconds": 70.137,
+    "acceptedPerMin": 42773
+  },
+  "flush": {
+    "at": 1790410654409,
+    "method": "docker exec wde-bench-redis-1 redis-cli FLUSHALL",
+    "before": {
+      "accepted": 25000,
+      "queue": {
+        "waiting": 23465,
+        "active": 5,
+        "delayed": 0,
+        "completed": 0,
+        "failed": 0,
+        "paused": 0
+      },
+      "db": {
+        "pending": 23525,
+        "delivering": 3,
+        "delivered": 1540,
+        "failed": 0,
+        "dead": 0,
+        "total": 25068,
+        "nonTerminal": 23528
+      },
+      "redisKeys": 23584
+    }
+  },
+  "allTerminal": false,
+  "secondsFromIngestEndToTerminal": null,
+  "finalDb": {
+    "pending": 23536,
+    "delivering": 0,
+    "delivered": 26464,
+    "failed": 0,
+    "dead": 0,
+    "total": 50000,
+    "nonTerminal": 23536
+  },
+  "receiver": {
+    "accepted": 50000,
+    "receipts": 26464,
+    "uniqueReceived": 26464,
+    "missing": 23536,
+    "missingIdsSample": [
+      "c4a85d56-9b2b-4c87-a9ba-eb47734412e7",
+      "71a4602c-fd2d-40f0-ba39-17f1d56d5254",
+      "e0fe1b90-082d-4986-8bda-2c976ab35f22",
+      "4c277cf4-6aa0-445b-9cfe-36f745adc42c",
+      "da45f8f5-92e8-4962-8d99-c46bef2413bf",
+      "bdec4713-5dfc-4fba-8e62-69141d0458bd",
+      "b6a9e860-121c-48a5-b147-f7c2da9aefd4",
+      "84799b51-2b16-4c24-be6a-742c25a6cc54",
+      "d6080827-a624-4f05-b4a6-dc4227835fd7",
+      "f2b758d5-a71a-4e17-b3fc-7da0ad6b9bb5",
+      "57c4a98e-b815-4d7c-a0e1-b3207d5ab5e6",
+      "c4369348-10dc-49f9-8a9b-30e5cb02529d",
+      "f6a7c644-439a-48a0-ad1c-6e6b4ecd7b6f",
+      "ee1bb95d-4777-4101-9598-84f2a2230382",
+      "8f5b1c23-7ff7-4150-9a0c-d5e24870df85",
+      "858682b0-1303-4b3f-846b-daf5f5b727f3",
+      "a49f6480-e16f-4208-8087-aac596a87065",
+      "4e9264bb-58bf-4d7f-8c08-658646602bde",
+      "ed0bfa35-43cd-45cc-967f-4eeac928e4ff",
+      "92033a80-0f30-44b5-b4b5-ab9147889d98"
+    ],
+    "idsWithDuplicates": 0,
+    "duplicateSends": 0,
+    "unexpectedIds": 0
+  }
+}

@@ -1,0 +1,99 @@
+{
+  "benchmark": "durability",
+  "machine": {
+    "cpu": "12th Gen Intel(R) Core(TM) i5-1245U",
+    "cores": 12,
+    "memGb": 17,
+    "platform": "Windows_NT 10.0.26200",
+    "node": "v24.19.0"
+  },
+  "env": {
+    "RECONCILE_INTERVAL_MS": "60000",
+    "RECONCILE_PENDING_AGE_MS": "(default 60000)",
+    "RECONCILE_DELIVERING_AGE_MS": "(default 300000)",
+    "LOG_LEVEL": "(default info)"
+  },
+  "params": {
+    "N": 3000,
+    "concurrency": 32,
+    "flushAt": 1500,
+    "waitMin": 3,
+    "restartAfterFlush": false
+  },
+  "subscriptionId": "e6c1da19-7580-4279-aa99-e2f810ed05db",
+  "ingest": {
+    "statusTally": {
+      "202": 3000
+    },
+    "accepted": 3000,
+    "seconds": 6.991,
+    "acceptedPerMin": 25747
+  },
+  "flush": {
+    "at": 1790406634862,
+    "method": "docker exec wde-bench-redis-1 redis-cli FLUSHALL",
+    "before": {
+      "accepted": 1500,
+      "queue": {
+        "waiting": 1410,
+        "active": 5,
+        "delayed": 0,
+        "completed": 0,
+        "failed": 0,
+        "paused": 0
+      },
+      "db": {
+        "pending": 1453,
+        "delivering": 5,
+        "delivered": 90,
+        "failed": 0,
+        "dead": 0,
+        "total": 1548,
+        "nonTerminal": 1458
+      },
+      "redisKeys": 1481
+    }
+  },
+  "allTerminal": false,
+  "secondsFromIngestEndToTerminal": null,
+  "finalDb": {
+    "pending": 1435,
+    "delivering": 0,
+    "delivered": 1565,
+    "failed": 0,
+    "dead": 0,
+    "total": 3000,
+    "nonTerminal": 1435
+  },
+  "receiver": {
+    "accepted": 3000,
+    "receipts": 1565,
+    "uniqueReceived": 1565,
+    "missing": 1435,
+    "missingIdsSample": [
+      "7a6f69ea-3a2b-4b52-b6a8-471f2cd93cf1",
+      "214c3d2f-46a9-4475-ac35-10ac3969d8f2",
+      "9896ef0e-a4d1-4d46-adb3-19c6372f1241",
+      "0f9fccd2-b764-44b2-84d5-11e460b0037c",
+      "448356e4-f7fc-4903-ae2f-d2bd6b80da96",
+      "8ed95850-dd6b-42a4-bca8-2572980670a7",
+      "37164ae6-4b8f-4c6b-90b4-c427d8859a1f",
+      "0594094b-2642-4929-a1c2-b2e685b8f864",
+      "87926f50-fd92-4a61-901b-673f87c98925",
+      "fc5e2d79-d660-4a32-b21a-eb77e7c14227",
+      "5e31c620-5ebc-4ecc-b6f8-294836180943",
+      "e511c162-297b-4fcc-bfb8-9b059a31c632",
+      "a1b5ddea-21ab-48c8-933b-b92081e8011b",
+      "ae60ea98-c917-4e07-aa45-79b683ec0abe",
+      "f1b85bd4-93d7-4b75-b6a9-1c459f324b41",
+      "9be44eea-db8a-46bb-87c6-3b7b62872003",
+      "b7ab87bc-9167-472a-ac9c-bdf61cb27058",
+      "bcaead28-55c0-4cf0-b95c-d2fe4998747c",
+      "b83eb33e-6816-45e9-9b83-34a5439220ec",
+      "05cdbe0b-14a2-4c5b-8a40-d01a01b0ece7"
+    ],
+    "idsWithDuplicates": 0,
+    "duplicateSends": 0,
+    "unexpectedIds": 0
+  }
+}

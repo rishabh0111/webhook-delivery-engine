@@ -1,0 +1,268 @@
+2026-09-26T07:45:18.435Z run dir bench/out/2026-09-26T07-45-18-433Z-throughput-5000pm-15m
+2026-09-26T07:45:21.595Z engine up (pid 27412)
+2026-09-26T07:45:31.914Z   sent=837 acked=837 delivered=835 backlog=1 waiting=0 active=2 inFlight=0
+2026-09-26T07:45:41.878Z   sent=1668 acked=1668 delivered=1664 backlog=3 waiting=0 active=3 inFlight=0
+2026-09-26T07:45:51.905Z   sent=2505 acked=2501 delivered=2498 backlog=2 waiting=1 active=1 inFlight=4
+2026-09-26T07:46:01.882Z   sent=3336 acked=3334 delivered=3332 backlog=1 waiting=0 active=1 inFlight=2
+2026-09-26T07:46:11.884Z   sent=4169 acked=4168 delivered=4166 backlog=1 waiting=0 active=1 inFlight=1
+2026-09-26T07:46:21.897Z   sent=5003 acked=5002 delivered=4999 backlog=2 waiting=0 active=3 inFlight=1
+2026-09-26T07:46:31.894Z   sent=5837 acked=5836 delivered=5834 backlog=1 waiting=0 active=1 inFlight=1
+2026-09-26T07:46:41.905Z   sent=6671 acked=6670 delivered=6668 backlog=0 waiting=0 active=1 inFlight=1
+2026-09-26T07:46:51.913Z   sent=7505 acked=7504 delivered=7501 backlog=1 waiting=0 active=1 inFlight=1
+2026-09-26T07:47:01.911Z   sent=8338 acked=8337 delivered=8334 backlog=2 waiting=0 active=2 inFlight=1
+2026-09-26T07:47:11.917Z   sent=9172 acked=9171 delivered=9167 backlog=2 waiting=0 active=2 inFlight=1
+2026-09-26T07:47:21.918Z   sent=10005 acked=10004 delivered=10002 backlog=0 waiting=0 active=0 inFlight=1
+2026-09-26T07:47:31.920Z   sent=10839 acked=10838 delivered=10835 backlog=2 waiting=0 active=2 inFlight=1
+2026-09-26T07:47:41.927Z   sent=11672 acked=11671 delivered=11668 backlog=3 waiting=1 active=2 inFlight=1
+2026-09-26T07:47:51.929Z   sent=12507 acked=12505 delivered=12502 backlog=2 waiting=0 active=2 inFlight=2
+2026-09-26T07:48:01.927Z   sent=13339 acked=13338 delivered=13336 backlog=1 waiting=0 active=1 inFlight=1
+2026-09-26T07:48:11.936Z   sent=14174 acked=14173 delivered=14170 backlog=1 waiting=0 active=1 inFlight=1
+2026-09-26T07:48:21.935Z   sent=15006 acked=15006 delivered=15003 backlog=2 waiting=0 active=2 inFlight=0
+2026-09-26T07:48:31.937Z   sent=15840 acked=15840 delivered=15837 backlog=1 waiting=0 active=1 inFlight=0
+2026-09-26T07:48:41.946Z   sent=16674 acked=16673 delivered=16668 backlog=3 waiting=0 active=3 inFlight=1
+2026-09-26T07:48:51.937Z   sent=17507 acked=17506 delivered=17501 backlog=4 waiting=0 active=4 inFlight=1
+2026-09-26T07:49:01.941Z   sent=18341 acked=18339 delivered=18337 backlog=1 waiting=0 active=1 inFlight=2
+2026-09-26T07:49:11.957Z   sent=19175 acked=19174 delivered=19170 backlog=1 waiting=0 active=1 inFlight=1
+2026-09-26T07:49:21.950Z   sent=20008 acked=20007 delivered=20005 backlog=0 waiting=0 active=0 inFlight=1
+2026-09-26T07:49:31.952Z   sent=20842 acked=20840 delivered=20838 backlog=0 waiting=0 active=0 inFlight=2
+2026-09-26T07:49:41.969Z   sent=21676 acked=21675 delivered=21671 backlog=1 waiting=0 active=1 inFlight=1
+2026-09-26T07:49:51.960Z   sent=22509 acked=22508 delivered=22506 backlog=1 waiting=0 active=2 inFlight=1
+2026-09-26T07:50:01.963Z   sent=23343 acked=23341 delivered=23339 backlog=1 waiting=0 active=1 inFlight=2
+2026-09-26T07:50:11.972Z   sent=24176 acked=24175 delivered=24171 backlog=3 waiting=0 active=3 inFlight=1
+2026-09-26T07:50:21.971Z   sent=25009 acked=25009 delivered=25004 backlog=3 waiting=0 active=3 inFlight=0
+2026-09-26T07:50:31.975Z   sent=25843 acked=25843 delivered=25839 backlog=1 waiting=0 active=1 inFlight=0
+2026-09-26T07:50:41.982Z   sent=26678 acked=26676 delivered=26672 backlog=2 waiting=1 active=1 inFlight=2
+2026-09-26T07:50:51.992Z   sent=27511 acked=27510 delivered=27507 backlog=0 waiting=0 active=0 inFlight=1
+2026-09-26T07:51:01.994Z   sent=28345 acked=28343 delivered=28340 backlog=2 waiting=0 active=2 inFlight=2
+2026-09-26T07:51:11.996Z   sent=29179 acked=29177 delivered=29176 backlog=0 waiting=0 active=0 inFlight=2
+2026-09-26T07:51:21.997Z   sent=30012 acked=30010 delivered=30009 backlog=1 waiting=0 active=2 inFlight=2
+2026-09-26T07:51:32.009Z   sent=30846 acked=30845 delivered=30842 backlog=0 waiting=0 active=0 inFlight=1
+2026-09-26T07:51:42.011Z   sent=31680 acked=31679 delivered=31675 backlog=2 waiting=0 active=2 inFlight=1
+2026-09-26T07:51:52.028Z   sent=32515 acked=32514 delivered=32510 backlog=0 waiting=0 active=0 inFlight=1
+2026-09-26T07:52:02.024Z   sent=33348 acked=33347 delivered=33343 backlog=1 waiting=0 active=1 inFlight=1
+2026-09-26T07:52:12.021Z   sent=34181 acked=34179 delivered=34176 backlog=2 waiting=0 active=2 inFlight=2
+2026-09-26T07:52:22.026Z   sent=35015 acked=35014 delivered=35009 backlog=3 waiting=0 active=3 inFlight=1
+2026-09-26T07:52:32.029Z   sent=35848 acked=35847 delivered=35844 backlog=0 waiting=0 active=0 inFlight=1
+2026-09-26T07:52:42.037Z   sent=36682 acked=36681 delivered=36678 backlog=0 waiting=0 active=0 inFlight=1
+2026-09-26T07:52:52.040Z   sent=37515 acked=37515 delivered=37512 backlog=0 waiting=0 active=0 inFlight=0
+2026-09-26T07:53:02.038Z   sent=38349 acked=38347 delivered=38345 backlog=1 waiting=0 active=2 inFlight=2
+2026-09-26T07:53:12.049Z   sent=39183 acked=39182 delivered=39179 backlog=0 waiting=0 active=0 inFlight=1
+2026-09-26T07:53:22.068Z   sent=40018 acked=40016 delivered=40012 backlog=2 waiting=0 active=2 inFlight=2
+2026-09-26T07:53:32.055Z   sent=40850 acked=40849 delivered=40846 backlog=1 waiting=0 active=1 inFlight=1
+2026-09-26T07:53:42.058Z   sent=41684 acked=41682 delivered=41680 backlog=1 waiting=0 active=1 inFlight=2
+2026-09-26T07:53:52.064Z   sent=42518 acked=42517 delivered=42512 backlog=3 waiting=0 active=3 inFlight=1
+2026-09-26T07:54:02.064Z   sent=43351 acked=43351 delivered=43347 backlog=1 waiting=0 active=1 inFlight=0
+2026-09-26T07:54:12.068Z   sent=44185 acked=44184 delivered=44181 backlog=1 waiting=0 active=2 inFlight=1
+2026-09-26T07:54:22.073Z   sent=45018 acked=45018 delivered=45014 backlog=0 waiting=0 active=0 inFlight=0
+2026-09-26T07:54:32.075Z   sent=45851 acked=45851 delivered=45846 backlog=2 waiting=0 active=2 inFlight=0
+2026-09-26T07:54:42.087Z   sent=46686 acked=46685 delivered=46681 backlog=0 waiting=0 active=0 inFlight=1
+2026-09-26T07:54:52.087Z   sent=47519 acked=47518 delivered=47516 backlog=1 waiting=0 active=1 inFlight=1
+2026-09-26T07:55:02.096Z   sent=48354 acked=48353 delivered=48349 backlog=0 waiting=0 active=0 inFlight=1
+2026-09-26T07:55:12.098Z   sent=49187 acked=49186 delivered=49183 backlog=0 waiting=0 active=0 inFlight=1
+2026-09-26T07:55:22.100Z   sent=50021 acked=50020 delivered=50016 backlog=1 waiting=0 active=1 inFlight=1
+2026-09-26T07:55:32.101Z   sent=50854 acked=50852 delivered=50850 backlog=2 waiting=0 active=2 inFlight=2
+2026-09-26T07:55:42.105Z   sent=51688 acked=51687 delivered=51682 backlog=2 waiting=0 active=2 inFlight=1
+2026-09-26T07:55:52.113Z   sent=52522 acked=52521 delivered=52518 backlog=0 waiting=0 active=0 inFlight=1
+2026-09-26T07:56:02.117Z   sent=53355 acked=53354 delivered=53350 backlog=2 waiting=0 active=2 inFlight=1
+2026-09-26T07:56:12.122Z   sent=54189 acked=54188 delivered=54184 backlog=0 waiting=0 active=0 inFlight=1
+2026-09-26T07:56:22.118Z   sent=55022 acked=55021 delivered=55018 backlog=0 waiting=0 active=0 inFlight=1
+2026-09-26T07:56:32.122Z   sent=55856 acked=55855 delivered=55850 backlog=2 waiting=0 active=2 inFlight=1
+2026-09-26T07:56:42.120Z   sent=56689 acked=56687 delivered=56685 backlog=0 waiting=0 active=0 inFlight=2
+2026-09-26T07:56:52.121Z   sent=57522 acked=57521 delivered=57519 backlog=0 waiting=0 active=0 inFlight=1
+2026-09-26T07:57:02.129Z   sent=58356 acked=58355 delivered=58352 backlog=1 waiting=0 active=1 inFlight=1
+2026-09-26T07:57:12.140Z   sent=59191 acked=59189 delivered=59186 backlog=0 waiting=0 active=0 inFlight=2
+2026-09-26T07:57:22.146Z   sent=60024 acked=60023 delivered=60020 backlog=2 waiting=0 active=2 inFlight=1
+2026-09-26T07:57:32.156Z   sent=60859 acked=60858 delivered=60854 backlog=1 waiting=0 active=1 inFlight=1
+2026-09-26T07:57:42.155Z   sent=61692 acked=61690 delivered=61686 backlog=3 waiting=0 active=3 inFlight=2
+2026-09-26T07:57:52.158Z   sent=62525 acked=62525 delivered=62522 backlog=0 waiting=0 active=0 inFlight=0
+2026-09-26T07:58:02.175Z   sent=63360 acked=63358 delivered=63355 backlog=1 waiting=0 active=1 inFlight=2
+2026-09-26T07:58:12.168Z   sent=64192 acked=64191 delivered=64189 backlog=1 waiting=0 active=1 inFlight=1
+2026-09-26T07:58:22.167Z   sent=65026 acked=65025 delivered=65022 backlog=1 waiting=0 active=1 inFlight=1
+2026-09-26T07:58:32.181Z   sent=65861 acked=65860 delivered=65855 backlog=2 waiting=0 active=2 inFlight=1
+2026-09-26T07:58:42.167Z   sent=66692 acked=66691 delivered=66689 backlog=1 waiting=0 active=1 inFlight=1
+2026-09-26T07:58:52.181Z   sent=67527 acked=67525 delivered=67523 backlog=1 waiting=0 active=1 inFlight=2
+2026-09-26T07:59:02.197Z   sent=68362 acked=68361 delivered=68356 backlog=2 waiting=0 active=2 inFlight=1
+2026-09-26T07:59:12.184Z   sent=69194 acked=69193 delivered=69190 backlog=2 waiting=0 active=2 inFlight=1
+2026-09-26T07:59:22.195Z   sent=70028 acked=70027 delivered=70025 backlog=0 waiting=0 active=0 inFlight=1
+2026-09-26T07:59:32.215Z   sent=70863 acked=70862 delivered=70856 backlog=3 waiting=0 active=3 inFlight=1
+2026-09-26T07:59:42.199Z   sent=71695 acked=71694 delivered=71691 backlog=1 waiting=0 active=1 inFlight=1
+2026-09-26T07:59:52.201Z   sent=72529 acked=72527 delivered=72523 backlog=4 waiting=1 active=4 inFlight=2
+2026-09-26T08:00:02.219Z   sent=73364 acked=73363 delivered=73358 backlog=2 waiting=0 active=2 inFlight=1
+2026-09-26T08:00:12.205Z   sent=74195 acked=74194 delivered=74192 backlog=1 waiting=0 active=1 inFlight=1
+2026-09-26T08:00:21.888Z   sent=75000 acked=75000 delivered=74999 backlog=1 waiting=0 active=1 inFlight=0
+2026-09-26T08:00:21.889Z load phase done: 75000 sent in 899.998s
+2026-09-26T08:00:21.942Z   db: total=75000 delivered=75000 dead=0 pending=0 delivering=0
+{
+  "benchmark": "throughput",
+  "machine": {
+    "cpu": "12th Gen Intel(R) Core(TM) i5-1245U",
+    "cores": 12,
+    "memGb": 17,
+    "platform": "Windows_NT 10.0.26200",
+    "node": "v24.19.0"
+  },
+  "env": {
+    "LOG_LEVEL": "(default info)"
+  },
+  "params": {
+    "ratePerMin": 5000,
+    "minutes": 15,
+    "total": 75000,
+    "drainMin": 10
+  },
+  "subscriptionId": "ca0dfce5-7c62-4cf2-804e-b7f62facd309",
+  "generator": {
+    "sent": 75000,
+    "loadSeconds": 899.998,
+    "maxLagBehindScheduleMs": 33,
+    "maxInFlight": 8,
+    "secondsToLastAck": 900.01
+  },
+  "ingest": {
+    "statusTally": {
+      "202": 75000
+    },
+    "accepted": 75000,
+    "offeredPerMin": 5000,
+    "ackLatencyMs": {
+      "n": 75000,
+      "p50": 13,
+      "p95": 23,
+      "p99": 25,
+      "max": 116
+    }
+  },
+  "delivery": {
+    "deliveredDuringLoadWindow": 74999,
+    "deliveredPerMinDuringLoad": 4999,
+    "backlogAtEndOfLoad": 1,
+    "maxBacklogSampled": 4,
+    "allTerminal": true,
+    "secondsFromLoadEndToDrained": 0.089
+  },
+  "endToEndLatencyMs": {
+    "n": 75000,
+    "p50": 23,
+    "p95": 33,
+    "p99": 38,
+    "max": 170
+  },
+  "endToEndLatencyMsBySendMinute": [
+    {
+      "n": 5000,
+      "p50": 26,
+      "p95": 36,
+      "p99": 41,
+      "max": 170
+    },
+    {
+      "n": 5000,
+      "p50": 24,
+      "p95": 33,
+      "p99": 37,
+      "max": 52
+    },
+    {
+      "n": 5000,
+      "p50": 18,
+      "p95": 28,
+      "p99": 32,
+      "max": 40
+    },
+    {
+      "n": 5000,
+      "p50": 22,
+      "p95": 32,
+      "p99": 36,
+      "max": 44
+    },
+    {
+      "n": 5000,
+      "p50": 25,
+      "p95": 35,
+      "p99": 39,
+      "max": 52
+    },
+    {
+      "n": 5000,
+      "p50": 17,
+      "p95": 26,
+      "p99": 31,
+      "max": 100
+    },
+    {
+      "n": 5000,
+      "p50": 23,
+      "p95": 33,
+      "p99": 37,
+      "max": 59
+    },
+    {
+      "n": 4999,
+      "p50": 17,
+      "p95": 27,
+      "p99": 31,
+      "max": 39
+    },
+    {
+      "n": 5001,
+      "p50": 20,
+      "p95": 30,
+      "p99": 35,
+      "max": 48
+    },
+    {
+      "n": 5000,
+      "p50": 22,
+      "p95": 32,
+      "p99": 39,
+      "max": 80
+    },
+    {
+      "n": 5000,
+      "p50": 23,
+      "p95": 34,
+      "p99": 40,
+      "max": 74
+    },
+    {
+      "n": 4999,
+      "p50": 26,
+      "p95": 36,
+      "p99": 41,
+      "max": 58
+    },
+    {
+      "n": 5001,
+      "p50": 23,
+      "p95": 33,
+      "p99": 39,
+      "max": 113
+    },
+    {
+      "n": 5000,
+      "p50": 24,
+      "p95": 34,
+      "p99": 39,
+      "max": 64
+    },
+    {
+      "n": 5000,
+      "p50": 20,
+      "p95": 30,
+      "p99": 35,
+      "max": 92
+    }
+  ],
+  "receiver": {
+    "accepted": 75000,
+    "receipts": 75000,
+    "uniqueReceived": 75000,
+    "missing": 0,
+    "missingIdsSample": [],
+    "idsWithDuplicates": 0,
+    "duplicateSends": 0,
+    "unexpectedIds": 0
+  }
+}
+2026-09-26T08:00:24.173Z engine killed (pid 27412)

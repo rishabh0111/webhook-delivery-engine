@@ -1,0 +1,173 @@
+{
+  "benchmark": "throughput",
+  "machine": {
+    "cpu": "12th Gen Intel(R) Core(TM) i5-1245U",
+    "cores": 12,
+    "memGb": 17,
+    "platform": "Windows_NT 10.0.26200",
+    "node": "v24.19.0"
+  },
+  "env": {
+    "LOG_LEVEL": "(default info)"
+  },
+  "params": {
+    "ratePerMin": 5000,
+    "minutes": 15,
+    "total": 75000,
+    "drainMin": 10
+  },
+  "subscriptionId": "ca0dfce5-7c62-4cf2-804e-b7f62facd309",
+  "generator": {
+    "sent": 75000,
+    "loadSeconds": 899.998,
+    "maxLagBehindScheduleMs": 33,
+    "maxInFlight": 8,
+    "secondsToLastAck": 900.01
+  },
+  "ingest": {
+    "statusTally": {
+      "202": 75000
+    },
+    "accepted": 75000,
+    "offeredPerMin": 5000,
+    "ackLatencyMs": {
+      "n": 75000,
+      "p50": 13,
+      "p95": 23,
+      "p99": 25,
+      "max": 116
+    }
+  },
+  "delivery": {
+    "deliveredDuringLoadWindow": 74999,
+    "deliveredPerMinDuringLoad": 4999,
+    "backlogAtEndOfLoad": 1,
+    "maxBacklogSampled": 4,
+    "allTerminal": true,
+    "secondsFromLoadEndToDrained": 0.089
+  },
+  "endToEndLatencyMs": {
+    "n": 75000,
+    "p50": 23,
+    "p95": 33,
+    "p99": 38,
+    "max": 170
+  },
+  "endToEndLatencyMsBySendMinute": [
+    {
+      "n": 5000,
+      "p50": 26,
+      "p95": 36,
+      "p99": 41,
+      "max": 170
+    },
+    {
+      "n": 5000,
+      "p50": 24,
+      "p95": 33,
+      "p99": 37,
+      "max": 52
+    },
+    {
+      "n": 5000,
+      "p50": 18,
+      "p95": 28,
+      "p99": 32,
+      "max": 40
+    },
+    {
+      "n": 5000,
+      "p50": 22,
+      "p95": 32,
+      "p99": 36,
+      "max": 44
+    },
+    {
+      "n": 5000,
+      "p50": 25,
+      "p95": 35,
+      "p99": 39,
+      "max": 52
+    },
+    {
+      "n": 5000,
+      "p50": 17,
+      "p95": 26,
+      "p99": 31,
+      "max": 100
+    },
+    {
+      "n": 5000,
+      "p50": 23,
+      "p95": 33,
+      "p99": 37,
+      "max": 59
+    },
+    {
+      "n": 4999,
+      "p50": 17,
+      "p95": 27,
+      "p99": 31,
+      "max": 39
+    },
+    {
+      "n": 5001,
+      "p50": 20,
+      "p95": 30,
+      "p99": 35,
+      "max": 48
+    },
+    {
+      "n": 5000,
+      "p50": 22,
+      "p95": 32,
+      "p99": 39,
+      "max": 80
+    },
+    {
+      "n": 5000,
+      "p50": 23,
+      "p95": 34,
+      "p99": 40,
+      "max": 74
+    },
+    {
+      "n": 4999,
+      "p50": 26,
+      "p95": 36,
+      "p99": 41,
+      "max": 58
+    },
+    {
+      "n": 5001,
+      "p50": 23,
+      "p95": 33,
+      "p99": 39,
+      "max": 113
+    },
+    {
+      "n": 5000,
+      "p50": 24,
+      "p95": 34,
+      "p99": 39,
+      "max": 64
+    },
+    {
+      "n": 5000,
+      "p50": 20,
+      "p95": 30,
+      "p99": 35,
+      "max": 92
+    }
+  ],
+  "receiver": {
+    "accepted": 75000,
+    "receipts": 75000,
+    "uniqueReceived": 75000,
+    "missing": 0,
+    "missingIdsSample": [],
+    "idsWithDuplicates": 0,
+    "duplicateSends": 0,
+    "unexpectedIds": 0
+  }
+}

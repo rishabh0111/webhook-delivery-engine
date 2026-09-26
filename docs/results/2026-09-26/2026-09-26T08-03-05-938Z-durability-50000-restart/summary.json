@@ -1,0 +1,79 @@
+{
+  "benchmark": "durability",
+  "machine": {
+    "cpu": "12th Gen Intel(R) Core(TM) i5-1245U",
+    "cores": 12,
+    "memGb": 17,
+    "platform": "Windows_NT 10.0.26200",
+    "node": "v24.19.0"
+  },
+  "env": {
+    "RECONCILE_INTERVAL_MS": "(default 900000)",
+    "RECONCILE_PENDING_AGE_MS": "(default 60000)",
+    "RECONCILE_DELIVERING_AGE_MS": "(default 300000)",
+    "LOG_LEVEL": "(default info)"
+  },
+  "params": {
+    "N": 50000,
+    "concurrency": 32,
+    "flushAt": 25000,
+    "waitMin": 40,
+    "restartAfterFlush": true
+  },
+  "subscriptionId": "37099203-6464-4f66-80d1-d0b13bd70630",
+  "ingest": {
+    "statusTally": {
+      "202": 50000
+    },
+    "accepted": 50000,
+    "seconds": 87.737,
+    "acceptedPerMin": 34193
+  },
+  "flush": {
+    "at": 1790409829484,
+    "method": "docker exec wde-bench-redis-1 redis-cli FLUSHALL",
+    "before": {
+      "accepted": 25000,
+      "queue": {
+        "waiting": 23468,
+        "active": 5,
+        "delayed": 0,
+        "completed": 0,
+        "failed": 0,
+        "paused": 0
+      },
+      "db": {
+        "pending": 23487,
+        "delivering": 3,
+        "delivered": 1541,
+        "failed": 0,
+        "dead": 0,
+        "total": 25031,
+        "nonTerminal": 23490
+      },
+      "redisKeys": 23505
+    },
+    "restartedAt": 1790409830984
+  },
+  "allTerminal": true,
+  "secondsFromIngestEndToTerminal": 722.492,
+  "finalDb": {
+    "pending": 0,
+    "delivering": 0,
+    "delivered": 50000,
+    "failed": 0,
+    "dead": 0,
+    "total": 50000,
+    "nonTerminal": 0
+  },
+  "receiver": {
+    "accepted": 50000,
+    "receipts": 50000,
+    "uniqueReceived": 50000,
+    "missing": 0,
+    "missingIdsSample": [],
+    "idsWithDuplicates": 0,
+    "duplicateSends": 0,
+    "unexpectedIds": 0
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "benchmark": "idempotency",
+  "machine": {
+    "cpu": "12th Gen Intel(R) Core(TM) i5-1245U",
+    "cores": 12,
+    "memGb": 17,
+    "platform": "Windows_NT 10.0.26200",
+    "node": "v24.19.0"
+  },
+  "env": {
+    "LOG_LEVEL": "(default info)"
+  },
+  "params": {
+    "M": 10000,
+    "concurrency": 32
+  },
+  "A_ingestIdempotencyKey": {
+    "subscriptionId": "45373e93-cf03-4016-96fc-fd8317deb0da",
+    "requests": 20000,
+    "concurrentPairs": 5000,
+    "sequentialPairs": 5000,
+    "status": {
+      "200": 10000,
+      "202": 10000
+    },
+    "pairsWithDifferentIds": 0,
+    "pairsNotOne202": 0,
+    "dbEvents": 10000,
+    "dbDistinctKeys": 10000,
+    "allTerminal": true,
+    "finalDb": {
+      "pending": 0,
+      "delivering": 0,
+      "delivered": 10000,
+      "failed": 0,
+      "dead": 0,
+      "total": 10000,
+      "nonTerminal": 0
+    },
+    "receiver": {
+      "accepted": 10000,
+      "receipts": 10000,
+      "uniqueReceived": 10000,
+      "missing": 0,
+      "missingIdsSample": [],
+      "idsWithDuplicates": 0,
+      "duplicateSends": 0,
+      "unexpectedIds": 0
+    }
+  },
+  "B_duplicateEnqueueSameJobId": {
+    "subscriptionId": "c8055e12-8140-432f-a01a-ae8478584cc7",
+    "events": 10000,
+    "enqueueCalls": 20000,
+    "bullmqDuplicatedEvents": 10000,
+    "allTerminal": true,
+    "finalDb": {
+      "pending": 0,
+      "delivering": 0,
+      "delivered": 10000,
+      "failed": 0,
+      "dead": 0,
+      "total": 10000,
+      "nonTerminal": 0
+    },
+    "receiverDeliveriesBeforeC": 10000
+  },
+  "C_lateReenqueueAfterDelivery": {
+    "enqueueCalls": 10000,
+    "bullmqDuplicatedEvents": 0,
+    "deliveryAttemptsBefore": 10000,
+    "deliveryAttemptsAfter": 10000,
+    "receiverDeliveriesAfter": 10000
+  },
+  "receiverB": {
+    "accepted": 10000,
+    "receipts": 10000,
+    "uniqueReceived": 10000,
+    "missing": 0,
+    "missingIdsSample": [],
+    "idsWithDuplicates": 0,
+    "duplicateSends": 0,
+    "unexpectedIds": 0
+  }
+}

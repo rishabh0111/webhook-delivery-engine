@@ -1,0 +1,66 @@
+{
+  "benchmark": "throughput",
+  "machine": {
+    "cpu": "12th Gen Intel(R) Core(TM) i5-1245U",
+    "cores": 12,
+    "memGb": 17,
+    "platform": "Windows_NT 10.0.26200",
+    "node": "v24.19.0"
+  },
+  "env": {
+    "LOG_LEVEL": "(default info)"
+  },
+  "params": {
+    "ratePerMin": 5000,
+    "minutes": 15,
+    "total": 75000,
+    "drainMin": 10
+  },
+  "subscriptionId": "3047e0e2-bc0d-4030-9a39-c4e98315f920",
+  "generator": {
+    "sent": 75000,
+    "loadSeconds": 899.999,
+    "maxLagBehindScheduleMs": 469,
+    "maxInFlight": 121,
+    "secondsToLastAck": 900.023
+  },
+  "ingest": {
+    "statusTally": {
+      "202": 75000
+    },
+    "accepted": 75000,
+    "offeredPerMin": 5000,
+    "ackLatencyMs": {
+      "n": 75000,
+      "p50": 17,
+      "p95": 63,
+      "p99": 327,
+      "max": 1408
+    }
+  },
+  "delivery": {
+    "deliveredDuringLoadWindow": 76401,
+    "deliveredPerMinDuringLoad": 5093,
+    "backlogAtEndOfLoad": 34,
+    "maxBacklogSampled": 351,
+    "allTerminal": true,
+    "secondsFromLoadEndToDrained": 2.519
+  },
+  "endToEndLatencyMs": {
+    "n": 75000,
+    "p50": 32,
+    "p95": 1026,
+    "p99": 4350,
+    "max": 5782
+  },
+  "receiver": {
+    "accepted": 75000,
+    "receipts": 76435,
+    "uniqueReceived": 76435,
+    "missing": 0,
+    "missingIdsSample": [],
+    "idsWithDuplicates": 0,
+    "duplicateSends": 0,
+    "unexpectedIds": 1435
+  }
+}

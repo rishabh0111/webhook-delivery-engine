@@ -1,0 +1,85 @@
+{
+  "benchmark": "idempotency",
+  "machine": {
+    "cpu": "12th Gen Intel(R) Core(TM) i5-1245U",
+    "cores": 12,
+    "memGb": 17,
+    "platform": "Windows_NT 10.0.26200",
+    "node": "v24.19.0"
+  },
+  "env": {
+    "LOG_LEVEL": "(default info)"
+  },
+  "params": {
+    "M": 200,
+    "concurrency": 32
+  },
+  "A_ingestIdempotencyKey": {
+    "subscriptionId": "8a96a0ae-16f9-425f-8adf-f0c10132477a",
+    "requests": 400,
+    "concurrentPairs": 100,
+    "sequentialPairs": 100,
+    "status": {
+      "200": 200,
+      "202": 200
+    },
+    "pairsWithDifferentIds": 0,
+    "pairsNotOne202": 0,
+    "dbEvents": 200,
+    "dbDistinctKeys": 200,
+    "allTerminal": true,
+    "finalDb": {
+      "pending": 0,
+      "delivering": 0,
+      "delivered": 200,
+      "failed": 0,
+      "dead": 0,
+      "total": 200,
+      "nonTerminal": 0
+    },
+    "receiver": {
+      "accepted": 200,
+      "receipts": 200,
+      "uniqueReceived": 200,
+      "missing": 0,
+      "missingIdsSample": [],
+      "idsWithDuplicates": 0,
+      "duplicateSends": 0,
+      "unexpectedIds": 0
+    }
+  },
+  "B_duplicateEnqueueSameJobId": {
+    "subscriptionId": "37ff2392-79c3-4ed8-a4e9-c1854722c12b",
+    "events": 200,
+    "enqueueCalls": 400,
+    "bullmqDuplicatedEvents": 200,
+    "allTerminal": true,
+    "finalDb": {
+      "pending": 0,
+      "delivering": 0,
+      "delivered": 200,
+      "failed": 0,
+      "dead": 0,
+      "total": 200,
+      "nonTerminal": 0
+    },
+    "receiverDeliveriesBeforeC": 200
+  },
+  "C_lateReenqueueAfterDelivery": {
+    "enqueueCalls": 200,
+    "bullmqDuplicatedEvents": 0,
+    "deliveryAttemptsBefore": 200,
+    "deliveryAttemptsAfter": 200,
+    "receiverDeliveriesAfter": 200
+  },
+  "receiverB": {
+    "accepted": 200,
+    "receipts": 200,
+    "uniqueReceived": 200,
+    "missing": 0,
+    "missingIdsSample": [],
+    "idsWithDuplicates": 0,
+    "duplicateSends": 0,
+    "unexpectedIds": 0
+  }
+}
